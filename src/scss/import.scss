@@ -1,0 +1,16 @@
+.board {
+	display: flex;
+    flex-wrap: wrap;
+    max-width: 200px;
+    margin: 100px auto;
+    align-items: center;
+    justify-content: center;
+
+	&__tile {
+		width: 60px;
+        height: 60px;
+        background: #f3f3f3;
+        margin: 1px;
+        transition: all 200ms ease-in-out;
+	}
+}
