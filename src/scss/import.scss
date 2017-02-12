@@ -1,14 +1,37 @@
+.container {
+	width: 600px;
+	margin: 0 auto;
+	padding: 36px 36px 0 36px;
+}
+
+.message {
+	margin: 0;
+	text-align: center;
+	min-height: 36px;
+}
+
 .board {
 	display: flex;
-    flex-wrap: wrap;
-    max-width: 200px;
-    margin: 100px auto;
     align-items: center;
+    flex-wrap: wrap;
     justify-content: center;
+    height: 600px;
+    width: 600px;
+    margin: 0 auto;
+
+	&__grid {
+		display: flex;
+	    flex-wrap: wrap;
+	    width: 192px;
+	    margin: 3px;
+	    padding: 1px;
+	    align-items: center;
+	    justify-content: center;
+	}
 
 	&__tile {
-		width: 60px;
-        height: 60px;
+		width: 62px;
+        height: 62px;
         background: #f3f3f3;
         margin: 1px;
         transition: all 200ms ease-in-out;

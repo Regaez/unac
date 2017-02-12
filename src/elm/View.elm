@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing (Html, div)
+import Html exposing (Html, h1, div, text)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Model exposing (..)
@@ -12,7 +12,22 @@ import Color.Convert exposing (colorToCssRgba)
 
 view : Model -> Html Msg
 view model =
-    div [ class "board" ] (map (renderTile model) model.board)
+    div [ class "container" ]
+        [ renderWinMessage model
+        , div [ class "board" ]
+            [ div [ class "board__grid" ] (map (renderTile model) model.board)
+            ]
+        ]
+
+
+renderWinMessage : Model -> Html Msg
+renderWinMessage model =
+    case model.winner of
+        Just winner ->
+            h1 [ class "message", style [ ( "color", colorToCssRgba winner.color ) ] ] [ text (winner.name ++ " has won!") ]
+
+        Nothing ->
+            h1 [ class "message" ] [ text (isDraw model.turnCount) ]
 
 
 renderTile : Model -> ( Int, Maybe Player ) -> Html Msg
@@ -40,3 +55,11 @@ activePlayer model turn =
 
         PlayerTwo ->
             model.playerTwo
+
+
+isDraw : Int -> String
+isDraw turns =
+    if turns == 9 then
+        "It is a draw!"
+    else
+        ""
