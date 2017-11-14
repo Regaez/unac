@@ -4,6 +4,7 @@ import Html exposing (beginnerProgram)
 import Model exposing (..)
 import Update exposing (update)
 import View exposing (view)
+import Array
 import Color
 
 
@@ -13,32 +14,31 @@ main =
 
 model : Model
 model =
-    { turn = PlayerOne
-    , turnCount = 0
-    , board = [ ( 0, Nothing ), ( 1, Nothing ), ( 2, Nothing ), ( 3, Nothing ), ( 4, Nothing ), ( 5, Nothing ), ( 6, Nothing ), ( 7, Nothing ), ( 8, Nothing ) ]
-    , conditions = winConditions
+    { turnCount = 0
+    , boards = Array.fromList <| List.repeat 9 initialBoard
+    , activePlayer = PlayerOne
     , playerOne = p1
     , playerTwo = p2
     , winner = Nothing
     }
 
 
-winConditions : List WinCondition
-winConditions =
-    [ ( 0, 1, 2 ), ( 3, 4, 5 ), ( 6, 7, 8 ), ( 0, 3, 6 ), ( 1, 4, 7 ), ( 2, 5, 8 ), ( 0, 4, 8 ), ( 2, 4, 6 ) ]
-
-
-p1 : Player
+p1 : PlayerConfig
 p1 =
-    { id = PlayerOne
-    , name = "Red"
+    { name = "Red"
     , color = Color.red
     }
 
 
-p2 : Player
+p2 : PlayerConfig
 p2 =
-    { id = PlayerTwo
-    , name = "Blue"
+    { name = "Blue"
     , color = Color.blue
+    }
+
+
+initialBoard : Board
+initialBoard =
+    { state = Active
+    , grid = Array.fromList <| List.repeat 9 Nothing
     }

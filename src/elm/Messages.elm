@@ -5,4 +5,4 @@ import Model exposing (Player)
 
 type Msg
     = CheckGrid
-    | SelectTile Int Player
+    | SelectTile Int Int Player

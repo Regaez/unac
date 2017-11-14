@@ -5,27 +5,33 @@ import Color exposing (Color)
 
 
 type alias Model =
-    { turn : PlayerIdentifier
-    , turnCount : Int
-    , board : List ( Int, Maybe Player )
-    , conditions : List WinCondition
-    , playerOne : Player
-    , playerTwo : Player
+    { turnCount : Int
+    , boards : Array Board
+    , activePlayer : Player
+    , playerOne : PlayerConfig
+    , playerTwo : PlayerConfig
     , winner : Maybe Player
     }
 
 
-type alias WinCondition =
-    ( Int, Int, Int )
-
-
-type alias Player =
-    { id : PlayerIdentifier
-    , name : String
-    , color : Color
+type alias Board =
+    { state : BoardState
+    , grid : Array (Maybe Player)
     }
 
 
-type PlayerIdentifier
+type BoardState
+    = Active
+    | Inactive
+    | Won Player
+
+
+type Player
     = PlayerOne
     | PlayerTwo
+
+
+type alias PlayerConfig =
+    { name : String
+    , color : Color
+    }

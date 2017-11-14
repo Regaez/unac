@@ -2,9 +2,16 @@ module Update exposing (..)
 
 import Messages exposing (Msg(..))
 import Model exposing (..)
-import Array exposing (fromList, set, toList)
-import Tuple exposing (second)
-import Helpers exposing (..)
+import Array exposing (Array, fromList, set, get)
+
+
+type alias WinCondition =
+    ( Int, Int, Int )
+
+
+winConditions : List WinCondition
+winConditions =
+    [ ( 0, 1, 2 ), ( 3, 4, 5 ), ( 6, 7, 8 ), ( 0, 3, 6 ), ( 1, 4, 7 ), ( 2, 5, 8 ), ( 0, 4, 8 ), ( 2, 4, 6 ) ]
 
 
 update : Msg -> Model -> Model
@@ -13,22 +20,35 @@ update msg model =
         CheckGrid ->
             model
 
-        SelectTile i player ->
-            let
-                theBoard =
-                    fromList model.board
-            in
-                { model
-                    | board = toList (set i ( i, Just player ) theBoard)
-                    , turn = nextPlayer player
-                    , winner = checkBoard model i player
-                    , turnCount = model.turnCount + 1
-                }
+        SelectTile tileIndex boardIndex player ->
+            { model
+                | boards = updateBoards model.boards boardIndex tileIndex player
+                , activePlayer = nextPlayer model.activePlayer
+                , winner = checkBoard model tileIndex player
+                , turnCount = model.turnCount + 1
+            }
 
 
-nextPlayer : Player -> PlayerIdentifier
+updateBoards : Array Board -> Int -> Int -> Player -> Array Board
+updateBoards boards boardIndex tileIndex player =
+    case get boardIndex boards of
+        Just board ->
+            set boardIndex (updateBoard board tileIndex player) boards
+
+        Nothing ->
+            boards
+
+
+updateBoard : Board -> Int -> Player -> Board
+updateBoard board tileIndex player =
+    { board
+        | grid = set tileIndex (Just player) board.grid
+    }
+
+
+nextPlayer : Player -> Player
 nextPlayer player =
-    case player.id of
+    case player of
         PlayerOne ->
             PlayerTwo
 
@@ -38,14 +58,14 @@ nextPlayer player =
 
 checkBoard : Model -> Int -> Player -> Maybe Player
 checkBoard model index player =
-    if List.length (List.filter (winConditionsMet model index player) (List.filter (isATargetCondition index) model.conditions)) > 0 then
+    if List.length (List.filter (winConditionsMet model player) (List.filter (isATargetCondition index) winConditions)) > 0 then
         Just player
     else
         Nothing
 
 
-winConditionsMet : Model -> Int -> Player -> ( Int, Int, Int ) -> Bool
-winConditionsMet model i player condition =
+winConditionsMet : Model -> Player -> ( Int, Int, Int ) -> Bool
+winConditionsMet model player condition =
     let
         ( x, y, z ) =
             condition
@@ -65,20 +85,11 @@ isATargetCondition i condition =
         x == i || y == i || z == i
 
 
-checkTile : Model -> Player -> Int -> Bool
-checkTile model player index =
-    case get index model.board of
-        Just a ->
-            let
-                owner =
-                    second a
-            in
-                case owner of
-                    Just owner ->
-                        owner.id == player.id
-
-                    Nothing ->
-                        False
+checkTile : Board -> Player -> Int -> Bool
+checkTile board player index =
+    case get index board.grid of
+        Just owner ->
+            owner == player
 
         Nothing ->
             False
