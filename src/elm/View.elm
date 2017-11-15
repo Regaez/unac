@@ -47,9 +47,8 @@ renderBoard model board bIndex =
 renderTile : Model -> BoardState -> Maybe Player -> Int -> Int -> Html Msg
 renderTile model boardState owner bIndex tIndex =
     case boardState of
-        Won player ->
-            selectedTile model player
-
+        --Won player ->
+        --    selectedTile model player
         Active ->
             case owner of
                 Just owner ->
@@ -58,8 +57,14 @@ renderTile model boardState owner bIndex tIndex =
                 Nothing ->
                     clickableTile model bIndex tIndex
 
-        Inactive ->
-            inactiveTile
+        --Inactive ->
+        _ ->
+            case owner of
+                Just owner ->
+                    selectedTile model owner
+
+                Nothing ->
+                    inactiveTile
 
 
 clickableTile : Model -> Int -> Int -> Html Msg

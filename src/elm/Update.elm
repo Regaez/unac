@@ -2,7 +2,7 @@ module Update exposing (..)
 
 import Messages exposing (Msg(..))
 import Model exposing (..)
-import Array exposing (Array, fromList, set, get)
+import Array exposing (Array, fromList, set, get, indexedMap)
 
 
 type alias WinCondition =
@@ -30,6 +30,48 @@ update msg model =
 
 updateBoards : Array Board -> Int -> Int -> Player -> Array Board
 updateBoards boards bIndex tIndex player =
+    updateBoardsOwner boards bIndex tIndex player
+        |> updateBoardsState tIndex
+
+
+updateBoardsState : Int -> Array Board -> Array Board
+updateBoardsState tIndex boards =
+    indexedMap
+        (\x board ->
+            if x == tIndex then
+                setBoardActiveState board
+            else
+                setBoardInactiveState board
+        )
+        boards
+
+
+setBoardActiveState : Board -> Board
+setBoardActiveState board =
+    case board.state of
+        Won a ->
+            board
+
+        _ ->
+            { board
+                | state = Active
+            }
+
+
+setBoardInactiveState : Board -> Board
+setBoardInactiveState board =
+    case board.state of
+        Won a ->
+            board
+
+        _ ->
+            { board
+                | state = Inactive
+            }
+
+
+updateBoardsOwner : Array Board -> Int -> Int -> Player -> Array Board
+updateBoardsOwner boards bIndex tIndex player =
     case get bIndex boards of
         Just board ->
             set bIndex (updateBoard board tIndex player) boards
