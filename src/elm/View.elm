@@ -37,31 +37,44 @@ renderBoard model board bIndex =
         (toList
             (indexedMap
                 (\y owner ->
-                    renderTile model owner bIndex y
+                    renderTile model board.state owner bIndex y
                 )
                 board.grid
             )
         )
 
 
-renderWinMessage : Model -> Html Msg
-renderWinMessage model =
-    case model.winner of
-        Just winner ->
-            h1 [ class "message", style [ ( "color", colorToCssRgba (getPlayer model winner).color ) ] ] [ text ((getPlayer model winner).name ++ " has won!") ]
+renderTile : Model -> BoardState -> Maybe Player -> Int -> Int -> Html Msg
+renderTile model boardState owner bIndex tIndex =
+    case boardState of
+        Won player ->
+            selectedTile model player
 
-        Nothing ->
-            h1 [ class "message" ] [ text (isDraw model.turnCount) ]
+        Active ->
+            case owner of
+                Just owner ->
+                    selectedTile model owner
+
+                Nothing ->
+                    clickableTile model bIndex tIndex
+
+        Inactive ->
+            inactiveTile
 
 
-renderTile : Model -> Maybe Player -> Int -> Int -> Html Msg
-renderTile model owner bIndex tIndex =
-    case owner of
-        Just owner ->
-            div [ class ("board__tile " ++ toString tIndex), style [ ( "backgroundColor", colorToCssRgba (getPlayer model owner).color ) ] ] []
+clickableTile : Model -> Int -> Int -> Html Msg
+clickableTile model bIndex tIndex =
+    div [ class "board__tile tile--active", onClick (SelectTile bIndex tIndex model.activePlayer) ] []
 
-        Nothing ->
-            div [ class ("board__tile " ++ toString tIndex), onClick (SelectTile bIndex tIndex model.activePlayer) ] []
+
+selectedTile : Model -> Player -> Html Msg
+selectedTile model player =
+    div [ class "board__tile", style [ ( "backgroundColor", colorToCssRgba (getPlayer model player).color ) ] ] []
+
+
+inactiveTile : Html Msg
+inactiveTile =
+    div [ class "board__tile tile--inactive" ] []
 
 
 getPlayer : Model -> Player -> PlayerConfig
@@ -72,6 +85,16 @@ getPlayer model player =
 
         PlayerTwo ->
             model.playerTwo
+
+
+renderWinMessage : Model -> Html Msg
+renderWinMessage model =
+    case model.winner of
+        Just winner ->
+            h1 [ class "message", style [ ( "color", colorToCssRgba (getPlayer model winner).color ) ] ] [ text ((getPlayer model winner).name ++ " has won!") ]
+
+        Nothing ->
+            h1 [ class "message" ] [ text (isDraw model.turnCount) ]
 
 
 isDraw : Int -> String
