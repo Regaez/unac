@@ -33,7 +33,7 @@ renderBoards model =
 
 renderBoard : Model -> Board -> Int -> Html Msg
 renderBoard model board bIndex =
-    div [ class ("board__grid grid--" ++ toString bIndex) ]
+    div [ class ("board__grid grid--" ++ (getBoardState board.state)) ]
         (toList
             (indexedMap
                 (\y owner ->
@@ -108,3 +108,16 @@ isDraw turns =
         "It is a draw!"
     else
         ""
+
+
+getBoardState : BoardState -> String
+getBoardState state =
+    case state of
+        Active ->
+            "active"
+
+        Inactive ->
+            "inactive"
+
+        Won x ->
+            "won"

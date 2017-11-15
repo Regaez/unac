@@ -21,19 +21,30 @@
 
 	&__grid {
 		display: flex;
-	    flex-wrap: wrap;
-	    width: 192px;
-	    margin: 3px;
-	    padding: 1px;
-	    align-items: center;
-	    justify-content: center;
+    flex-wrap: wrap;
+    width: 196px;
+    margin: 2px;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    transition: border 200ms ease-in-out;
+
+    &.grid--active {
+      border: 2px solid orange;
+    }
 	}
 
 	&__tile {
 		width: 62px;
-        height: 62px;
-        background: #f3f3f3;
-        margin: 1px;
-        transition: all 200ms ease-in-out;
+    height: 62px;
+    background: #f3f3f3;
+    margin: 1px;
+    transition: all 200ms ease-in-out;
+
+    .grid--active & {
+      cursor: pointer;
+    }
 	}
 }
