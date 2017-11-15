@@ -20,29 +20,29 @@ update msg model =
         CheckGrid ->
             model
 
-        SelectTile tileIndex boardIndex player ->
+        SelectTile tIndex bIndex player ->
             { model
-                | boards = updateBoards model.boards boardIndex tileIndex player
+                | boards = updateBoards model.boards bIndex tIndex player
                 , activePlayer = nextPlayer model.activePlayer
-                , winner = checkBoard model tileIndex player
                 , turnCount = model.turnCount + 1
             }
 
 
 updateBoards : Array Board -> Int -> Int -> Player -> Array Board
-updateBoards boards boardIndex tileIndex player =
-    case get boardIndex boards of
+updateBoards boards bIndex tIndex player =
+    case get bIndex boards of
         Just board ->
-            set boardIndex (updateBoard board tileIndex player) boards
+            set bIndex (updateBoard board tIndex player) boards
 
         Nothing ->
             boards
 
 
 updateBoard : Board -> Int -> Player -> Board
-updateBoard board tileIndex player =
+updateBoard board tIndex player =
     { board
-        | grid = set tileIndex (Just player) board.grid
+        | state = checkBoard board tIndex player
+        , grid = set tIndex (Just player) board.grid
     }
 
 
@@ -56,16 +56,16 @@ nextPlayer player =
             PlayerOne
 
 
-checkBoard : Model -> Int -> Player -> Maybe Player
-checkBoard model index player =
-    if List.length (List.filter (winConditionsMet model player) (List.filter (isATargetCondition index) winConditions)) > 0 then
-        Just player
+checkBoard : Board -> Int -> Player -> BoardState
+checkBoard board index player =
+    if List.length (List.filter (winConditionsMet board player) (List.filter (isATargetCondition index) winConditions)) > 0 then
+        Won player
     else
-        Nothing
+        board.state
 
 
-winConditionsMet : Model -> Player -> ( Int, Int, Int ) -> Bool
-winConditionsMet model player condition =
+winConditionsMet : Board -> Player -> ( Int, Int, Int ) -> Bool
+winConditionsMet board player condition =
     let
         ( x, y, z ) =
             condition
@@ -73,7 +73,7 @@ winConditionsMet model player condition =
         tiles =
             [ x, y, z ]
     in
-        List.length (List.filter (checkTile model player) tiles) == 2
+        List.length (List.filter (checkTile board player) tiles) == 2
 
 
 isATargetCondition : Int -> ( Int, Int, Int ) -> Bool
@@ -87,9 +87,20 @@ isATargetCondition i condition =
 
 checkTile : Board -> Player -> Int -> Bool
 checkTile board player index =
-    case get index board.grid of
-        Just owner ->
-            owner == player
+    let
+        arrayItem =
+            get index board.grid
+    in
+        -- array get might return nothing
+        case arrayItem of
+            Just arrayItem ->
+                -- board grid value might be nothing too
+                case arrayItem of
+                    Just owner ->
+                        owner == player
 
-        Nothing ->
-            False
+                    Nothing ->
+                        False
+
+            Nothing ->
+                False

@@ -5,7 +5,7 @@ import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Messages exposing (Msg(..))
-import List exposing (map)
+import Array exposing (indexedMap, toList)
 import Tuple exposing (first, second)
 import Color.Convert exposing (colorToCssRgba)
 
@@ -14,10 +14,34 @@ view : Model -> Html Msg
 view model =
     div [ class "container" ]
         [ renderWinMessage model
-        , div [ class "board" ]
-            [ div [ class "board__grid" ] (map (renderTile model) model.boards)
-            ]
+        , renderBoards model
         ]
+
+
+renderBoards : Model -> Html Msg
+renderBoards model =
+    div [ class "board" ]
+        (toList
+            (indexedMap
+                (\x board ->
+                    renderBoard model board x
+                )
+                model.boards
+            )
+        )
+
+
+renderBoard : Model -> Board -> Int -> Html Msg
+renderBoard model board bIndex =
+    div [ class ("board__grid grid--" ++ toString bIndex) ]
+        (toList
+            (indexedMap
+                (\y owner ->
+                    renderTile model owner bIndex y
+                )
+                board.grid
+            )
+        )
 
 
 renderWinMessage : Model -> Html Msg
@@ -30,21 +54,14 @@ renderWinMessage model =
             h1 [ class "message" ] [ text (isDraw model.turnCount) ]
 
 
-renderTile : Model -> ( Int, Maybe Player ) -> Html Msg
-renderTile model item =
-    let
-        index =
-            first item
+renderTile : Model -> Maybe Player -> Int -> Int -> Html Msg
+renderTile model owner boardIndex tileIndex =
+    case owner of
+        Just owner ->
+            div [ class "board__tile", style [ ( "backgroundColor", colorToCssRgba (getPlayer model owner).color ) ] ] []
 
-        tile =
-            second item
-    in
-        case tile of
-            Just tile ->
-                div [ class "board__tile", style [ ( "backgroundColor", colorToCssRgba (getPlayer model tile).color ) ] ] []
-
-            Nothing ->
-                div [ class "board__tile", onClick (SelectTile index model.activePlayer) ] []
+        Nothing ->
+            div [ class "board__tile", onClick (SelectTile boardIndex tileIndex model.activePlayer) ] []
 
 
 getPlayer : Model -> Player -> PlayerConfig
