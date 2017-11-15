@@ -55,13 +55,13 @@ renderWinMessage model =
 
 
 renderTile : Model -> Maybe Player -> Int -> Int -> Html Msg
-renderTile model owner boardIndex tileIndex =
+renderTile model owner bIndex tIndex =
     case owner of
         Just owner ->
-            div [ class "board__tile", style [ ( "backgroundColor", colorToCssRgba (getPlayer model owner).color ) ] ] []
+            div [ class ("board__tile " ++ toString tIndex), style [ ( "backgroundColor", colorToCssRgba (getPlayer model owner).color ) ] ] []
 
         Nothing ->
-            div [ class "board__tile", onClick (SelectTile boardIndex tileIndex model.activePlayer) ] []
+            div [ class ("board__tile " ++ toString tIndex), onClick (SelectTile bIndex tIndex model.activePlayer) ] []
 
 
 getPlayer : Model -> Player -> PlayerConfig

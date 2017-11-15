@@ -20,7 +20,7 @@ update msg model =
         CheckGrid ->
             model
 
-        SelectTile tIndex bIndex player ->
+        SelectTile bIndex tIndex player ->
             { model
                 | boards = updateBoards model.boards bIndex tIndex player
                 , activePlayer = nextPlayer model.activePlayer
