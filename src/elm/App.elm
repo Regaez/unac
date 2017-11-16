@@ -14,8 +14,7 @@ main =
 
 model : Model
 model =
-    { turnCount = 0
-    , boards = Array.fromList <| List.repeat 9 initialBoard
+    { boards = Array.fromList <| List.repeat 9 initialBoard
     , activePlayer = PlayerOne
     , playerOne = p1
     , playerTwo = p2

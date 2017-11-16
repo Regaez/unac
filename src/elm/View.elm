@@ -99,15 +99,7 @@ renderWinMessage model =
             h1 [ class "message", style [ ( "color", colorToCssRgba (getPlayer model winner).color ) ] ] [ text ((getPlayer model winner).name ++ " has won!") ]
 
         Nothing ->
-            h1 [ class "message" ] [ text (isDraw model.turnCount) ]
-
-
-isDraw : Int -> String
-isDraw turns =
-    if turns == 9 then
-        "It is a draw!"
-    else
-        ""
+            h1 [ class "message" ] []
 
 
 getBoardState : BoardState -> String

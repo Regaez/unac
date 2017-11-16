@@ -5,8 +5,7 @@ import Color exposing (Color)
 
 
 type alias Model =
-    { turnCount : Int
-    , boards : Array Board
+    { boards : Array Board
     , activePlayer : Player
     , playerOne : PlayerConfig
     , playerTwo : PlayerConfig

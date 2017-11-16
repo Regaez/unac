@@ -24,7 +24,7 @@ update msg model =
             { model
                 | boards = updateBoards model.boards bIndex tIndex player
                 , activePlayer = nextPlayer model.activePlayer
-                , turnCount = model.turnCount + 1
+                , winner = checkWinner model.boards bIndex model.activePlayer
             }
 
 
@@ -123,12 +123,38 @@ nextPlayer player =
             PlayerOne
 
 
+checkWinner : Array Board -> Int -> Player -> Maybe Player
+checkWinner boards index player =
+    let
+        isWinner =
+            List.length (List.filter (gameWinConditionMet boards player) (List.filter (isATargetCondition index) winConditions)) > 0
+    in
+        case isWinner of
+            True ->
+                Just player
+
+            False ->
+                Nothing
+
+
 checkBoard : Board -> Int -> Player -> BoardState
 checkBoard board index player =
     if List.length (List.filter (winConditionsMet board player) (List.filter (isATargetCondition index) winConditions)) > 0 then
         Won player
     else
         board.state
+
+
+gameWinConditionMet : Array Board -> Player -> ( Int, Int, Int ) -> Bool
+gameWinConditionMet boards player condition =
+    let
+        ( x, y, z ) =
+            condition
+
+        boardsWon =
+            [ x, y, z ]
+    in
+        List.length (List.filter (checkAllBoards boards player) boardsWon) == 2
 
 
 winConditionsMet : Board -> Player -> ( Int, Int, Int ) -> Bool
@@ -150,6 +176,33 @@ isATargetCondition i condition =
             condition
     in
         x == i || y == i || z == i
+
+
+checkAllBoards : Array Board -> Player -> Int -> Bool
+checkAllBoards boards player index =
+    let
+        board =
+            get index boards
+    in
+        -- array get might return nothing
+        case board of
+            Just board ->
+                -- board grid value might be nothing too
+                case board.state of
+                    Active ->
+                        False
+
+                    Inactive ->
+                        False
+
+                    Won winner ->
+                        if winner == player then
+                            True
+                        else
+                            False
+
+            Nothing ->
+                False
 
 
 checkTile : Board -> Player -> Int -> Bool
