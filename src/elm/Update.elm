@@ -36,12 +36,37 @@ updateBoards boards bIndex tIndex player =
 
 updateBoardsState : Int -> Array Board -> Array Board
 updateBoardsState tIndex boards =
+    if (isBoardWon tIndex boards) then
+        setAllBoardsActive boards
+    else
+        indexedMap
+            (\x board ->
+                if x == tIndex then
+                    setBoardActiveState board
+                else
+                    setBoardInactiveState board
+            )
+            boards
+
+
+isBoardWon : Int -> Array Board -> Bool
+isBoardWon index boards =
+    case get index boards of
+        Just board ->
+            board.state /= Active && board.state /= Inactive
+
+        Nothing ->
+            False
+
+
+setAllBoardsActive : Array Board -> Array Board
+setAllBoardsActive boards =
     indexedMap
         (\x board ->
-            if x == tIndex then
+            if board.state == Active || board.state == Inactive then
                 setBoardActiveState board
             else
-                setBoardInactiveState board
+                board
         )
         boards
 
