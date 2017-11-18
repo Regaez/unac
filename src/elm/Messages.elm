@@ -4,5 +4,5 @@ import Model exposing (Player)
 
 
 type Msg
-    = CheckGrid
+    = Reset
     | SelectTile Int Int Player

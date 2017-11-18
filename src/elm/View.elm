@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing (Html, h1, div, text)
+import Html exposing (Html, h1, div, text, button)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Model exposing (..)
@@ -12,10 +12,18 @@ import Color.Convert exposing (colorToCssRgba)
 
 view : Model -> Html Msg
 view model =
-    div [ class "container" ]
-        [ renderWinMessage model
-        , renderBoards model
-        ]
+    case model.winner of
+        Just winner ->
+            div [ class "container" ]
+                [ renderWinMessage model
+                , renderReset
+                ]
+
+        Nothing ->
+            div [ class "container" ]
+                [ renderTurnPrompt (getPlayer model model.activePlayer)
+                , renderBoards model
+                ]
 
 
 renderBoards : Model -> Html Msg
@@ -100,6 +108,16 @@ renderWinMessage model =
 
         Nothing ->
             h1 [ class "message" ] []
+
+
+renderTurnPrompt : PlayerConfig -> Html Msg
+renderTurnPrompt player =
+    h1 [ class "message", style [ ( "color", colorToCssRgba player.color ) ] ] [ text (player.name ++ "'s turn:") ]
+
+
+renderReset : Html Msg
+renderReset =
+    button [ class "reset", onClick Reset ] [ text "Play again" ]
 
 
 getBoardState : BoardState -> String

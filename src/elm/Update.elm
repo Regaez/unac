@@ -17,8 +17,8 @@ winConditions =
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        CheckGrid ->
-            model
+        Reset ->
+            defaults
 
         SelectTile bIndex tIndex player ->
             handleSelection model bIndex tIndex player
