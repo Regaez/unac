@@ -20,6 +20,9 @@ update msg model =
         Reset ->
             defaults
 
+        Start ->
+            { model | state = Game }
+
         SelectTile bIndex tIndex player ->
             handleSelection model bIndex tIndex player
                 |> handleGameWin bIndex

@@ -1,23 +1,23 @@
 .container {
-	width: 600px;
-	margin: 0 auto;
-	padding: 36px 36px 0 36px;
+    width: 600px;
+    margin: 0 auto;
+    padding: 36px 36px 0 36px;
 }
 
 .message {
-	margin: 0;
-	text-align: center;
-	min-height: 36px;
+    margin: 0;
+    text-align: center;
+    min-height: 36px;
 }
 
-.reset {
-  display: block;
-  margin: 36px auto;
-  padding: 10px 20px;
+.button {
+    display: block;
+    margin: 36px auto;
+    padding: 10px 20px;
 }
 
 .board {
-	display: flex;
+    display: flex;
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
@@ -25,32 +25,32 @@
     width: 600px;
     margin: 0 auto;
 
-	&__grid {
-		display: flex;
-    flex-wrap: wrap;
-    width: 196px;
-    margin: 2px;
-    padding: 0;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    border: 2px solid transparent;
-    transition: border 200ms ease-in-out;
+    &__grid {
+        display: flex;
+        flex-wrap: wrap;
+        width: 196px;
+        margin: 2px;
+        padding: 0;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        border: 2px solid transparent;
+        transition: border 200ms ease-in-out;
 
-    &.grid--active {
-      border: 2px solid orange;
+        &.grid--active {
+          border: 2px solid orange;
+        }
     }
-	}
 
-	&__tile {
-		width: 62px;
-    height: 62px;
-    background: #f3f3f3;
-    margin: 1px;
-    transition: all 200ms ease-in-out;
+    &__tile {
+        width: 62px;
+        height: 62px;
+        background: #f3f3f3;
+        margin: 1px;
+        transition: all 200ms ease-in-out;
 
-    .grid--active & {
-      cursor: pointer;
+        .grid--active & {
+            cursor: pointer;
+        }
     }
-	}
 }

@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing (Html, h1, div, text, button)
+import Html exposing (Html, h1, h2, div, text, button, ul, li, p)
 import Html.Attributes exposing (class, style)
 import Html.Events exposing (onClick)
 import Model exposing (..)
@@ -12,6 +12,19 @@ import Color.Convert exposing (colorToCssRgba)
 
 view : Model -> Html Msg
 view model =
+    case model.state of
+        Game ->
+            viewGame model
+
+        MenuStart ->
+            renderMenuStart
+
+        _ ->
+            div [] []
+
+
+viewGame : Model -> Html Msg
+viewGame model =
     case model.winner of
         Just winner ->
             div [ class "container" ]
@@ -117,7 +130,7 @@ renderTurnPrompt player =
 
 renderReset : Html Msg
 renderReset =
-    button [ class "reset", onClick Reset ] [ text "Play again" ]
+    button [ class "button", onClick Reset ] [ text "Play again" ]
 
 
 getBoardState : BoardState -> String
@@ -131,3 +144,18 @@ getBoardState state =
 
         Won x ->
             "won"
+
+
+renderMenuStart : Html Msg
+renderMenuStart =
+    div [ class "container" ]
+        [ h1 [ class "message" ] [ text "Ultimate Noughts and Crosses" ]
+        , h2 [] [ text "Instructions" ]
+        , p [] [ text "Normal rules for Noughts and Crosses (Tic Tac Toe) apply, with some extras:" ]
+        , ul []
+            [ li [] [ text "First player to win 3 game boards in a row, wins overall. An individual game is won by a player owning 3 tiles in a row." ]
+            , li [] [ text "The tile you select determines which game board is played on by the next player. For example, selecting the top left tile on any game board will force the next player to play in the top left game." ]
+            , li [] [ text "If a player should play on a game board which is already won, or has no tiles available, then they will have the choice to play on any remaining game board instead." ]
+            ]
+        , button [ class "button", onClick Start ] [ text "Start game" ]
+        ]

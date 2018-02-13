@@ -5,12 +5,20 @@ import Color exposing (Color)
 
 
 type alias Model =
-    { boards : Array Board
+    { state : GameState
+    , boards : Array Board
     , activePlayer : Player
     , playerOne : PlayerConfig
     , playerTwo : PlayerConfig
     , winner : Maybe Player
     }
+
+
+type GameState
+    = Game
+    | MenuStart
+    | MenuSettings PlayerConfig
+    | MenuWinner
 
 
 type alias Board =
@@ -38,7 +46,8 @@ type alias PlayerConfig =
 
 defaults : Model
 defaults =
-    { boards = Array.fromList <| List.repeat 9 initialBoard
+    { state = MenuStart
+    , boards = Array.fromList <| List.repeat 9 initialBoard
     , activePlayer = PlayerOne
     , playerOne = p1
     , playerTwo = p2
