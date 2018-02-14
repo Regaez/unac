@@ -1,9 +1,12 @@
 module Messages exposing (..)
 
 import Model exposing (Player)
+import Color exposing (Color)
 
 
 type Msg
     = Reset
-    | Start
+    | StartGame
+    | Configure
+    | PickColour Player Color
     | SelectTile Int Int Player

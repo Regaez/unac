@@ -3,6 +3,7 @@ module Update exposing (..)
 import Messages exposing (Msg(..))
 import Model exposing (..)
 import Array exposing (Array, fromList, set, get, indexedMap)
+import Color exposing (Color)
 
 
 type alias WinCondition =
@@ -20,8 +21,14 @@ update msg model =
         Reset ->
             defaults
 
-        Start ->
+        StartGame ->
             { model | state = Game }
+
+        Configure ->
+            { model | state = MenuSettings }
+
+        PickColour player colour ->
+            handlePlayerColourSelect model player colour
 
         SelectTile bIndex tIndex player ->
             handleSelection model bIndex tIndex player
@@ -42,6 +49,16 @@ handleNextPlayer model =
 handleGameWin : Int -> Model -> Model
 handleGameWin bIndex model =
     { model | winner = findWinner model.boards bIndex }
+
+
+handlePlayerColourSelect : Model -> Player -> Color -> Model
+handlePlayerColourSelect model player colour =
+    case player of
+        PlayerOne ->
+            { model | playerOne = { name = model.playerOne.name, color = colour } }
+
+        PlayerTwo ->
+            { model | playerTwo = { name = model.playerTwo.name, color = colour } }
 
 
 findWinner : Array Board -> Int -> Maybe Player

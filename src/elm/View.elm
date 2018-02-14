@@ -1,12 +1,13 @@
 module View exposing (..)
 
-import Html exposing (Html, h1, h2, div, text, button, ul, li, p)
-import Html.Attributes exposing (class, style)
+import Html exposing (Html, h1, h2, div, text, button, ul, li, p, input)
+import Html.Attributes exposing (class, style, value)
 import Html.Events exposing (onClick)
 import Model exposing (..)
 import Messages exposing (Msg(..))
 import Array exposing (indexedMap, toList)
 import Tuple exposing (first, second)
+import Color exposing (Color)
 import Color.Convert exposing (colorToCssRgba)
 
 
@@ -18,6 +19,9 @@ view model =
 
         MenuStart ->
             renderMenuStart
+
+        MenuSettings ->
+            renderMenuSettings model.playerOne model.playerTwo
 
         _ ->
             div [] []
@@ -36,6 +40,7 @@ viewGame model =
             div [ class "container" ]
                 [ renderTurnPrompt (getPlayer model model.activePlayer)
                 , renderBoards model
+                , renderConfigButton
                 ]
 
 
@@ -146,6 +151,11 @@ getBoardState state =
             "won"
 
 
+renderConfigButton : Html Msg
+renderConfigButton =
+    button [ class "button", onClick Configure ] [ text "Configure players" ]
+
+
 renderMenuStart : Html Msg
 renderMenuStart =
     div [ class "container" ]
@@ -157,5 +167,48 @@ renderMenuStart =
             , li [] [ text "The tile you select determines which game board is played on by the next player. For example, selecting the top left tile on any game board will force the next player to play in the top left game." ]
             , li [] [ text "If a player should play on a game board which is already won, or has no tiles available, then they will have the choice to play on any remaining game board instead." ]
             ]
-        , button [ class "button", onClick Start ] [ text "Start game" ]
+        , button [ class "button", onClick StartGame ] [ text "Start game" ]
         ]
+
+
+renderMenuSettings : PlayerConfig -> PlayerConfig -> Html Msg
+renderMenuSettings p1 p2 =
+    div [ class "container" ]
+        [ h1 [ class "message" ] [ text "Configure Players" ]
+        , renderPlayerConfig PlayerOne p1 p2
+        , renderPlayerConfig PlayerTwo p2 p1
+        , button [ class "button", onClick StartGame ] [ text "Back to game" ]
+        ]
+
+
+renderPlayerConfig : Player -> PlayerConfig -> PlayerConfig -> Html Msg
+renderPlayerConfig p player otherPlayer =
+    div []
+        [ input [ value player.name ] []
+        , div [ class "colour__list" ] (renderColourList p player.color otherPlayer.color)
+        ]
+
+
+colours : List Color
+colours =
+    [ Color.red, Color.orange, Color.yellow, Color.green, Color.blue, Color.purple, Color.brown ]
+
+
+renderColourList : Player -> Color -> Color -> List (Html Msg)
+renderColourList p player other =
+    List.map (renderColourTile p player) (List.filter (otherPlayerColour other) colours)
+
+
+renderColourTile : Player -> Color -> Color -> Html Msg
+renderColourTile p player colour =
+    div
+        [ class "colour__option"
+        , style [ ( "backgroundColor", colorToCssRgba colour ) ]
+        , onClick (PickColour p colour)
+        ]
+        []
+
+
+otherPlayerColour : Color -> Color -> Bool
+otherPlayerColour otherPlayer colour =
+    otherPlayer /= colour

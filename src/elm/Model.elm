@@ -17,7 +17,7 @@ type alias Model =
 type GameState
     = Game
     | MenuStart
-    | MenuSettings PlayerConfig
+    | MenuSettings
     | MenuWinner
 
 
