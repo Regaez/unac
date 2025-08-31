@@ -1,0 +1,62 @@
+package templates
+
+import (
+	"fmt"
+	"unac/domain"
+	. "unac/assets"
+)
+
+templ Page(game domain.GameState) {
+	<html>
+		<head>
+			<meta charset="utf-8"/>
+			<title>Ultimate Noughts and Crosses</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<link rel="stylesheet" href={ AssetCss.Route() }/>
+			<script type="module" src={ AssetDatastar.Route() }></script>
+		</head>
+		<body>
+			<main id="main" data-on-load="@get('/updates')">
+				<h1>unac</h1>
+				<button data-on-click="@post('/reset');">Restart</button>
+				@Game(game)
+			</main>
+		</body>
+	</html>
+}
+
+templ Game(game domain.GameState) {
+	<div id="game">
+		<div id="grid" class="grid" data-player={ game.GetCurrentPlayer() }>
+			for _, b := range game.Boards {
+				<div
+					id={ fmt.Sprintf("board-%d", b.Id) }
+					class={ "board", b.State.String(), templ.KV("won", !b.IsAvailable()) }
+				>
+					for _, c := range b.Cells {
+						if game.IsSelectable(b, c) {
+							<button
+								class="cell"
+								id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }
+								data-on-click={ fmt.Sprintf("@post('/select/%d/%d')", b.Id, c.Id) }
+								data-indicator="fetching"
+								data-attr-disabled="$fetching"
+							></button>
+						} else {
+							<div class={ "cell", c.State.String() } id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }>
+								{ c.State }
+							</div>
+						}
+					}
+				</div>
+			}
+		</div>
+		if !game.IsOngoing() {
+			if game.WinState == "draw" {
+				<h2>It's a draw!</h2>
+			} else {
+				<h2 class={ game.WinState.String() }>{ game.WinState } wins!</h2>
+			}
+		}
+	</div>
+}

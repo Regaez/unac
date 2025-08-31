@@ -1,0 +1,50 @@
+/* 
+LAYOUT: Icon
+@name layout-icon
+@description Wherever content needs to be deliberately obscured, the Icon pattern is your friend. It may be that the content is yet to be made available. In which case, the Imposter may consist of a call-to-action to unlock that content.
+@link https://every-layout.dev/layouts/icon/
+
+--- CSS VARIABLES ---
+ 
+@var --icon-position
+@default absolute
+@values absolute | fixed
+@description The aspect ratio for the frame layout; should be a valid `aspect-ratio` value.
+
+@var --icon-margin
+@default 1rem
+@description The margin/space between the element and the inner edges of the positioning container; should use `rem` unit.
+
+--- PROPS ---
+
+@prop contain
+@description
+
+--- USAGE ---
+
+@example Default.
+
+<layout-icon>
+  <img data-is-icon src="/path/to/image" alt="description of the image here" />
+</layout-icon> 
+
+@example Override CSS variable values with style attribute.
+
+<layout-icon style="--imposter-position: fixed;">
+  <img data-is-icon src="/path/to/image" alt="description of the image here" />
+</layout-imposter>
+
+*/
+layout-icon {
+  --icon-spacing: 0.75rem;
+  --icon-size: 1.5rem;
+  --icon-align: center;
+  display: inline-flex;
+  align-items: var(--icon-align);
+}
+
+layout-icon > [data-is-icon] {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-inline-end: var(--icon-spacing);
+}

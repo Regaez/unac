@@ -1,0 +1,81 @@
+
+/* 
+LAYOUT: Cover
+@name layout-cover
+@description Cluster layouts suit any groups of elements that differ in length and are liable to wrap. Buttons that appear together at the end of forms are ideal candidates, as well as lists of tags, keywords, or other meta information. Use the Cluster to align any groups of horizontally laid out elements to the left or right, or in the center.
+@link https://every-layout.dev/layouts/cover/
+
+--- CSS VARIABLES ---
+ 
+@var --cover-spacing
+@default 1rem
+@description The minimum spacing between and around child elements; should use `rem` unit.
+
+@var --cover-min-size
+@default 100vh
+@description The minimum height (block-size) of the parent element, before it grows to accommodate its content; should use `vh` or `rem` unit.
+
+@var --cover-padding
+@default initial
+@description The padding within the cover container element; should use `rem` unit. By default, there is no padding.
+
+--- PROPS ---
+
+@prop data-cover-center
+@description This attribute should be given to a single *child* element of the cover container, not the cover container itself! It indicates that this element should be vertically centered within the cover layout. If omitted, cover children will be "spaced between" vertically.
+
+--- USAGE ---
+
+@example Default. Items have 1rem spacing and the container will cover the entire viewport. The child with the `data-cover-center` attribute will be vertically centered in the cover container.
+
+<layout-cover>
+ <div><!-- header --></div>
+ <div data-cover-center><!-- vertically centered --></div>
+ <div><!-- footer --></div>
+</layout-cover>
+ 
+@example Override CSS variable values with style attribute
+
+<layout-cover style="--cover-min-size: 50vh;">
+ <div><!-- item --></div>
+ <div data-cover-center><!-- item --></div>
+ <div><!-- item --></div>
+</layout-cover>
+ 
+@example No `data-cover-center` attribute was given to a child element, so the `header` child will appear at the start of the cover container, and the `footer` child will be placed at the end.
+
+<layout-cover>
+ <div><!-- header --></div>
+ <div><!-- footer --></div>
+</layout-cover>
+
+*/
+layout-cover {
+  --cover-min-size: 100vh;
+  --cover-spacing: 1rem;
+  --cover-padding: initial;
+  display: flex;
+  flex-direction: column;
+  min-block-size: var(--cover-min-size);
+  padding: var(--cover-padding);
+}
+
+layout-cover:not(:has(> [data-cover-center])) {
+  justify-content: space-between;
+}
+
+layout-cover > * {
+  margin-block: var(--cover-spacing);
+}
+
+layout-cover > :first-child:not([data-cover-center]) {
+  margin-block-start: 0;
+}
+
+layout-cover > :last-child:not([data-cover-center]) {
+  margin-block-end: 0;
+}
+
+layout-cover > [data-cover-center] {
+  margin-block: auto;
+}

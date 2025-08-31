@@ -1,0 +1,123 @@
+/* 
+LAYOUT: Stack
+@name layout-stack
+@description The potential remit of the Stack layout can hardly be overestimated. Anywhere elements are stacked one atop another, it is likely a Stack should be in effect. Only adjacent elements (such as grid cells) should not be subject to a Stack. The grid cells are likely to be Stacks, however, and the grid itself a member of a Stack. Stacks can be nested as direct descendents up to 4 times and retain proper spacing.
+@link https://every-layout.dev/layouts/stack/
+
+--- CSS VARIABLES ---
+ 
+@var --stack-spacing
+@default 6        
+@description Space between the stack items; multiplier of var(--spacing, 0.25rem). Values are aligned with Tailwind spacing.
+
+--- PROPS ---
+
+@prop split-after
+@values 1 | 2 | 3 | 4 | 5 | -2 | -1
+@description Specify an index from which the remaining children will be rendered at opposite end of the stack container. Default behaviour is no splitting.
+
+@prop recursive
+@description If attribute exists, applies spacing recursively (i.e. regardless of nesting level). This may affect unwanted elements in certain situations and instead it may be better to use multiple `layout-stack` elements within each other.
+
+--- USAGE ---
+
+@example Override CSS variable values with style attribute
+
+<layout-stack style="--stack-spacing: 2;">
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+</layout-stack>
+ 
+@example Split the stack items after 2 children
+
+<layout-stack split-after="2">
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+ <div><!-- item show at opposite end --></div>
+</layout-stack>
+
+@example Recursively space elements down the tree. Both `item` and `nested item` elements will be given the same spacing between each other.
+
+<layout-stack recursive>
+ <div><!-- item --></div>
+ <div><!-- item -->
+   <div><!-- nested item --></div>
+   <div><!-- nested item --></div>
+ </div>
+ <div><!-- item --></div>
+</layout-stack>
+
+@example A child stack will keep the spacing of the parent stack, even if it overrides its own spacing. In this case, the `item` and child `layout-stack` will be spaced 1.5rem apart, while the `nested item`s will be spaced `0.5rem` apart. This works up to 3 levels of directly nested layout-stacks.
+
+<layout-stack>
+  <div><!-- item --></div>
+  <layout-stack style="--stack-spacing: 2;">
+    <div><!-- nested item --></div>
+    <div><!-- nested item --></div>
+  </layout-stack>
+</layout-stack>
+
+*/
+layout-stack {
+  --stack-spacing: 6;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+layout-stack:not([recursive]) > *,
+layout-stack[recursive] * {
+  margin-block: 0;
+}
+
+layout-stack:not([recursive]) > * + *,
+layout-stack[recursive] * + * {
+  margin-block-start: calc(var(--spacing, 0.25rem) * var(--stack-spacing));
+}
+
+layout-stack[split-after]:only-child {
+  block-size: 100%;
+}
+
+layout-stack[split-after="1"] > :nth-child(1),
+layout-stack[split-after="2"] > :nth-child(2),
+layout-stack[split-after="3"] > :nth-child(3),
+layout-stack[split-after="4"] > :nth-child(4),
+layout-stack[split-after="5"] > :nth-child(5),
+layout-stack[split-after="-2"] > :nth-last-child(3),
+layout-stack[split-after="-1"] > :nth-last-child(2) {
+  margin-block-end: auto;
+}
+
+/* If a stack is nested within another stack, and the nested one overrides its own spacing via the `style` attribute, we need to retain the spacing of the parent stack; otherwise the child stack's spacing gets used as it has a higher specificity from being set inline (hence the `!important` usage). */
+layout-stack:has(> * + layout-stack) {
+  --stack-parent-spacing: var(--stack-spacing);
+}
+
+layout-stack:has(> layout-stack > layout-stack) {
+  --stack-grandparent-spacing: var(--stack-spacing);
+}
+
+layout-stack:has(> layout-stack > layout-stack > layout-stack) {
+  --stack-great-grandparent-spacing: var(--stack-spacing);
+}
+
+/* Similar to the usual stack rules, we apply the margin to direct child stacks that are _adjacent_ to another element; since the rules can apply  */
+layout-stack > * + layout-stack {
+  margin-block-start: calc(
+    var(--spacing, 0.25rem) * var(--stack-parent-spacing)
+  ) !important;
+}
+
+layout-stack > * + layout-stack:has(> layout-stack) {
+  margin-block-start: calc(
+    var(--spacing, 0.25rem) * var(--stack-grandparent-spacing)
+  ) !important;
+}
+
+layout-stack > * + layout-stack:has(> layout-stack > layout-stack) {
+  margin-block-start: calc(
+    var(--spacing, 0.25rem) * var(--stack-great-grandparent-spacing)
+  ) !important;
+}

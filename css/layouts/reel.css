@@ -1,0 +1,110 @@
+
+/* 
+LAYOUT: Reel
+@name layout-reel
+@description The Reel is a robust and efficient antidote to carousel/slider components. As already discussed and demonstrated, it is ideal for browsing categories of things: movies; products; news stories; photographs. In addition, it can be used to supplant button-activated menu systems. It may well be more usable than “hamburger” menus for many.
+@link https://every-layout.dev/layouts/reel/
+
+--- CSS VARIABLES ---
+ 
+@var --reel-size
+@default auto
+@description The height (block-size) of the parent (Reel) element; should use `rem` unit, or `auto`.
+
+@var --reel-item-size
+@default auto
+@description The width of each child element; should use `rem` unit, or `auto`.
+
+@var --reel-spacing
+@default 1rem
+@description The minimum spacing between and around child elements; should use `rem` unit.
+
+@var --reel-thumb-color
+@default #fff
+@description The color of the scrollbar thumb.
+
+@var --reel-track-color
+@default #000
+@description The color of the scrollbar track.
+
+--- PROPS ---
+
+@prop no-scrollbar
+@description If attribute exists, it hides the scrollbar from being visible.
+
+--- USAGE ---
+
+@example Default.
+
+<layout-reel>
+  <img src="/path/to/image" alt="description of the image here" />
+  <img src="/path/to/image" alt="description of the image here" />
+  <img src="/path/to/image" alt="description of the image here" />
+</layout-reel> 
+
+@example Override CSS variable values with style attribute and hide the scrollbar.
+
+<layout-reel style="--reel-spacing: 2rem;" no-scrollbar>
+  <img src="/path/to/image" alt="description of the image here" />
+  <img src="/path/to/image" alt="description of the image here" />
+  <img src="/path/to/image" alt="description of the image here" />
+</layout-reel>
+
+*/
+layout-reel {
+  --reel-size: auto;
+  --reel-item-size: auto;
+  --reel-spacing: 1rem;
+  --reel-track-color: #000;
+  --reel-thumb-color: #fff;
+  display: flex;
+  block-size: var(--reel-size);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-color: var(--reel-thumb-color) var(--reel-track-color);
+}
+
+layout-reel::-webkit-scrollbar {
+  block-size: 1rem;
+}
+
+layout-reel::-webkit-scrollbar-track {
+  background-color: var(--reel-track-color);
+}
+
+layout-reel::-webkit-scrollbar-thumb {
+  background-color: var(--reel-track-color);
+  background-image: linear-gradient(
+    var(--reel-track-color) 0,
+    var(--reel-track-color) 0.25rem,
+    var(--reel-thumb-color) 0.25rem,
+    var(--reel-thumb-color) 0.75rem,
+    var(--reel-track-color) 0.75rem
+  );
+}
+
+layout-reel[no-scrollbar] {
+  scrollbar-width: none;
+}
+
+layout-reel[no-scrollbar]::-webkit-scrollbar {
+  display: none;
+}
+
+layout-reel > * {
+  flex: 0 0 var(--reel-item-size);
+}
+
+layout-reel > img {
+  block-size: 100%;
+  flex-basis: auto;
+  width: auto;
+}
+
+layout-reel > * + * {
+  margin-inline-start: var(--reel-spacing);
+}
+
+layout-reel[has-overflow]:not([no-scrollbar]) {
+  padding-block-end: var(--reel-spacing);
+}

@@ -1,0 +1,64 @@
+/* 
+LAYOUT: Sidebar
+@name layout-sidebar
+@description The Sidebar is applicable to all sorts of content. The ubiquitous “media object” (the placing of an item of media next to a description) is a mainstay, but it can also be used to align buttons with form inputs (where the button forms the sidebar and has an intrinsic, content-based width).
+@link https://every-layout.dev/layouts/sidebar/
+
+--- CSS VARIABLES ---
+ 
+@var --sidebar-gap
+@default 1rem        
+@description Space between the sidebar and content; should use `rem` unit.
+
+@var --sidebar-width         
+@default initial
+@description Sets a fixed width of the sidebar. If not specified, the sidebar will inherit its width from its content. Should use `%`, `ch`, or `rem` units.
+
+@var --sidebar-content-width 
+@default 50%         
+@description The narrowest content can be before wrapping; should use `%`, `ch`, or `rem` units.
+
+--- PROPS ---
+
+@prop content-first                     
+@default undefined
+@description Indicates content should be displayed first (i.e. first child should be considered the "content")
+
+--- USAGE ---
+
+@example Override CSS variable values with style attribute
+
+<layout-sidebar style="--sidebar-width: 30ch;">
+ <div><!-- sidebar --></div>
+ <div><!-- content --></div>
+</layout-sidebar>
+ 
+@example Show content at the start (i.e. left/first child), sidebar at the end
+
+<layout-sidebar content-first>
+  <div><!-- content --></div>
+  <div><!-- sidebar --></div>
+</layout-sidebar>
+ 
+*/
+layout-sidebar {
+  --sidebar-gap: 1rem;
+  --sidebar-content-width: 50%;
+  --sidebar-width: initial;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sidebar-gap);
+}
+
+layout-sidebar:not([content-first]) > :first-child,
+layout-sidebar[content-first] > :last-child {
+  flex-basis: var(--sidebar-width);
+  flex-grow: 1;
+}
+
+layout-sidebar:not([content-first]) > :last-child,
+layout-sidebar[content-first] > :first-child {
+  flex-basis: 0;
+  flex-grow: 999;
+  min-inline-size: var(--sidebar-content-width);
+}

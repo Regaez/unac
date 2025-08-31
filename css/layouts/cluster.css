@@ -1,0 +1,57 @@
+/* 
+LAYOUT: Cluster
+@name layout-cluster
+@description Cluster layouts suit any groups of elements that differ in length and are liable to wrap. Buttons that appear together at the end of forms are ideal candidates, as well as lists of tags, keywords, or other meta information. Use the Cluster to align any groups of horizontally laid out elements to the left or right, or in the center.
+@link https://every-layout.dev/layouts/cluster/
+
+--- CSS VARIABLES ---
+ 
+@var --cluster-spacing
+@default 1rem
+@description The spacing between each of the clustered elements; should use `rem` unit.
+
+@var --cluster-justify
+@default flex-start
+@description Controls horizontal alignment, based on `justify-content` values. If attribute is not defined, will be `flex-start` by default. 
+
+@var --cluster-align
+@default center
+@description Controls vertical alignment, based on `align-items` values. If attribute is not defined, will be `center` by default.
+
+--- USAGE ---
+
+@example Default. Items have 1rem spacing and are aligned horizontally at the start of the container, vertically centered.
+
+<layout-cluster>
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+</layout-cluster>
+ 
+@example Override CSS variable values with style attribute
+
+<layout-cluster style="--cluster-spacing: 0.5rem;">
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+</layout-cluster>
+ 
+@example Items have horizontal spacing between and vertically aligned to the end.
+
+<layout-cluster style="--cluster-justify: space-between; --cluster-align: flex-end;">
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+ <div><!-- item --></div>
+</layout-cluster>
+
+*/
+layout-cluster {
+  --cluster-spacing: 1rem;
+  --cluster-justify: flex-start;
+  --cluster-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cluster-spacing);
+  justify-content: var(--cluster-justify);
+  align-items: var(--cluster-align);
+}

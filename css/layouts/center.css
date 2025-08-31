@@ -1,0 +1,67 @@
+
+/* 
+LAYOUT: Center
+@name layout-center
+@description Whenever you wish something to be horizontally centered, the Center layout is your friend.
+@link https://every-layout.dev/layouts/center/
+
+--- CSS VARIABLES ---
+ 
+@var --center-measure
+@default 60ch  
+@description The maximum width of the centered element; should use `ch` unit.
+
+@var --center-padding
+@default initial
+@description The minimum gutter space on either side of the content; should use `rem` unit. By default, there is no padding.
+
+--- PROPS ---
+
+@prop text
+@description If attribute exists, also center aligns text within the container.
+
+@prop intrinsic
+@description If attribute exists, center aligns child elements based on their content width; will not affect block elements unless they have a set width.
+
+--- USAGE ---
+
+@example Default. Centered container is 60ch wide, text is left-aligned.
+
+<layout-center>
+  <p>Some left aligned text.</p>
+</layout-center>
+
+@example Override CSS variable values with style attribute
+
+<layout-center style="--center-padding: 0.5rem; --center-measure: 30ch;">
+ <!-- centered content -->
+</layout-center>
+ 
+@example Center align text within the centered layout container, and also intrinsically center the button within the container.
+
+<layout-center text intrinsic>
+ <p>Some center aligned text</p>
+ <button>Intrinsically centered button</button>
+</layout-center>
+
+*/
+layout-center {
+  --center-measure: var(--measure, 60ch);
+  --center-padding: initial;
+  display: block;
+  box-sizing: content-box;
+  margin-inline: auto;
+  max-inline-size: var(--center-measure);
+  padding-inline: var(--center-padding);
+}
+
+layout-center[text] {
+  text-align: center;
+}
+
+layout-center[intrinsic] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
