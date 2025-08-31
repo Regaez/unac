@@ -39,6 +39,8 @@ func main() {
 	dsMux.Get("/updates", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
 
+		sse.PatchElementTempl(templates.Game(gameState))
+
 		gameState.OnChange(func() {
 			sse.PatchElementTempl(templates.Game(gameState))
 		})
