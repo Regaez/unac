@@ -15,6 +15,7 @@ import (
 )
 
 var games = make(map[string]*domain.GameState)
+var history = []string{}
 
 func main() {
 	r := chi.NewRouter()
@@ -33,6 +34,14 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		g := domain.NewGameState()
+
+		// Limit stored games to 100
+		history = append(history, g.Id)
+		if len(history) > 100 {
+			delete(games, history[0])
+			history = history[1:]
+		}
+
 		games[g.Id] = &g
 		w.Header().Add("Location", fmt.Sprintf("/%s", g.Id))
 		w.WriteHeader(303)
@@ -42,7 +51,7 @@ func main() {
 		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 
 		if !gameExists {
-			w.WriteHeader(400)
+			w.WriteHeader(404)
 			return
 		}
 
@@ -94,7 +103,7 @@ func main() {
 		w.WriteHeader(204)
 	})
 
-	dsMux.Post("/{gameId}/reset", func(w http.ResponseWriter, r *http.Request) {
+	dsMux.Post("/{gameId}/undo", func(w http.ResponseWriter, r *http.Request) {
 		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 
 		if !gameExists {
@@ -102,7 +111,7 @@ func main() {
 			return
 		}
 
-		gameState.Reset()
+		gameState.Undo()
 		w.WriteHeader(204)
 	})
 

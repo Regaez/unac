@@ -144,12 +144,22 @@ func (g *GameState) ApplyTurn(t Turn) {
 	g.emitChange()
 }
 
-func (g *GameState) Reset() {
+func (g *GameState) Undo() {
+	if len(g.Turns) == 0 {
+		return
+	}
+
 	newGame := NewGameState()
 
 	g.Boards = newGame.Boards
-	g.Turns = newGame.Turns
 	g.WinState = newGame.WinState
+	turns := make([]Turn, len(g.Turns))
+	copy(turns, g.Turns)
+	g.Turns = []Turn{}
+
+	for _, t := range turns[:len(turns)-1] {
+		g.ApplyTurn(t)
+	}
 
 	g.emitChange()
 }
