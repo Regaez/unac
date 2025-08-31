@@ -32,6 +32,11 @@ html {
     sans-serif;
 }
 
+main {
+  max-width: min(100%, 600px);
+  margin: auto;
+}
+
 #game {
   margin-block: 1em;
 }
