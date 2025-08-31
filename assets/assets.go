@@ -31,7 +31,7 @@ var AssetCss = Asset{
 	mimeType:        "text/css; charset=utf-8",
 }
 
-//go:embed embed/datastar-1-0-0-rc5.js
+//go:embed embed/datastar-1-0-0-3d272b462c7c50fc.js
 var assetContentDatastar []byte
 var AssetDatastar = Asset{
 	content:         assetContentDatastar,

@@ -31,13 +31,13 @@ func main() {
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		// Need to add this to trigger compression middleware
+		w.Header().Add("Content-Type", "text/html")
 		templates.Page(gameState).Render(context.Background(), w)
 	})
 
 	dsMux.Get("/updates", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
-
-		sse.PatchElementTempl(templates.Game(gameState))
 
 		gameState.OnChange(func() {
 			sse.PatchElementTempl(templates.Game(gameState))
