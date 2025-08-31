@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"unac/assets"
@@ -14,8 +16,26 @@ import (
 	"github.com/starfederation/datastar-go/datastar"
 )
 
+// CLI flag to store the TCP port
+var flagPort int
+
 var games = make(map[string]*domain.GameState)
 var history = []string{}
+
+func init() {
+	const (
+		defaultPort = 3000
+		usagePort   = "Specify a TCP port for the server to listen on."
+	)
+	flag.IntVar(&flagPort, "port", defaultPort, usagePort)
+	flag.IntVar(&flagPort, "p", defaultPort, usagePort)
+
+	flag.Usage = func() {
+		fmt.Println("OPTIONS:")
+		fmt.Println("\t-p, --port")
+		fmt.Printf("\t\t%s (default %d)\n", usagePort, defaultPort)
+	}
+}
 
 func main() {
 	r := chi.NewRouter()
@@ -115,5 +135,5 @@ func main() {
 		w.WriteHeader(204)
 	})
 
-	http.ListenAndServe(":3000", r)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", flagPort), r))
 }
