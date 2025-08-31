@@ -38,6 +38,9 @@ func init() {
 }
 
 func main() {
+	// Get CLI flags
+	flag.Parse()
+
 	r := chi.NewRouter()
 
 	// Apply middlewares
