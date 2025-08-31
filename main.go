@@ -63,12 +63,12 @@ func main() {
 	dsMux.Get("/{gameId}", func(w http.ResponseWriter, r *http.Request) {
 		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 
+		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
+
 		if !gameExists {
-			w.WriteHeader(400)
+			sse.Redirect("/")
 			return
 		}
-
-		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
 
 		sse.PatchElementTempl(templates.Game(*gameState))
 
