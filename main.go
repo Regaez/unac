@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"unac/assets"
@@ -13,9 +14,9 @@ import (
 	"github.com/starfederation/datastar-go/datastar"
 )
 
-func main() {
-	gameState := domain.NewGameState()
+var games = make(map[string]*domain.GameState)
 
+func main() {
 	r := chi.NewRouter()
 
 	// Apply middlewares
@@ -31,18 +32,39 @@ func main() {
 	}
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		// Need to add this to trigger compression middleware
-		w.Header().Add("Content-Type", "text/html")
-		templates.Page(gameState).Render(context.Background(), w)
+		g := domain.NewGameState()
+		games[g.Id] = &g
+		w.Header().Add("Location", fmt.Sprintf("/%s", g.Id))
+		w.WriteHeader(303)
 	})
 
-	dsMux.Get("/updates", func(w http.ResponseWriter, r *http.Request) {
+	r.Get("/{gameId}", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
+
+		if !gameExists {
+			w.WriteHeader(400)
+			return
+		}
+
+		// Need to add this to trigger compression middleware
+		w.Header().Add("Content-Type", "text/html")
+		templates.Page(*gameState).Render(context.Background(), w)
+	})
+
+	dsMux.Get("/{gameId}", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
+
+		if !gameExists {
+			w.WriteHeader(400)
+			return
+		}
+
 		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
 
-		sse.PatchElementTempl(templates.Game(gameState))
+		sse.PatchElementTempl(templates.Game(*gameState))
 
 		gameState.OnChange(func() {
-			sse.PatchElementTempl(templates.Game(gameState))
+			sse.PatchElementTempl(templates.Game(*gameState))
 		})
 
 		for {
@@ -53,11 +75,12 @@ func main() {
 		}
 	})
 
-	dsMux.Post("/select/{boardId}/{cellId}", func(w http.ResponseWriter, r *http.Request) {
+	dsMux.Post("/{gameId}/{boardId}/{cellId}", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 		boardId, bErr := strconv.Atoi(chi.URLParam(r, "boardId"))
 		cellId, cErr := strconv.Atoi(chi.URLParam(r, "cellId"))
 
-		if bErr != nil || cErr != nil {
+		if !gameExists || bErr != nil || cErr != nil {
 			w.WriteHeader(400)
 			return
 		}
@@ -71,7 +94,14 @@ func main() {
 		w.WriteHeader(204)
 	})
 
-	dsMux.Post("/reset", func(w http.ResponseWriter, r *http.Request) {
+	dsMux.Post("/{gameId}/reset", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
+
+		if !gameExists {
+			w.WriteHeader(400)
+			return
+		}
+
 		gameState.Reset()
 		w.WriteHeader(204)
 	})

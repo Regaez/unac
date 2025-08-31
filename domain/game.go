@@ -150,7 +150,6 @@ func (g *GameState) Reset() {
 	g.Boards = newGame.Boards
 	g.Turns = newGame.Turns
 	g.WinState = newGame.WinState
-	g.Id = newGame.Id
 
 	g.emitChange()
 }
