@@ -97,6 +97,7 @@ func main() {
 
 		gameState.OnChange(func() {
 			sse.PatchElementTempl(templates.Game(*gameState))
+			sse.PatchSignals([]byte("{clicked: false}"))
 		})
 
 		for {

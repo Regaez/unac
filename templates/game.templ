@@ -35,7 +35,7 @@ templ Page(game domain.GameState) {
 }
 
 templ Game(game domain.GameState) {
-	<div id="game">
+	<div id="game" data-signals-clicked="false">
 		<div id="grid" class="grid" data-player={ game.GetCurrentPlayer() }>
 			for _, b := range game.Boards {
 				<div
@@ -47,9 +47,8 @@ templ Game(game domain.GameState) {
 							<button
 								class="cell"
 								id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }
-								data-on-click={ fmt.Sprintf("@post('/%s/%d/%d')", game.Id, b.Id, c.Id) }
-								data-indicator="fetching"
-								data-attr-disabled="$fetching"
+								data-on-click={ fmt.Sprintf("$clicked = true; @post('/%s/%d/%d')", game.Id, b.Id, c.Id) }
+								data-attr-disabled="$clicked"
 							></button>
 						} else {
 							<div class={ "cell", c.State.String() } id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }>

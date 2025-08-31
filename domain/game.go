@@ -130,18 +130,24 @@ func (g *GameState) OnChange(f func()) {
 	g.onChanges = append(g.onChanges, f)
 }
 
-func (g *GameState) emitChange() {
+func (g *GameState) notifyChange() {
 	for _, f := range g.onChanges {
 		f()
 	}
 }
 
-func (g *GameState) ApplyTurn(t Turn) {
+func (g *GameState) applyTurn(t Turn, notify bool) {
 	g.Boards[t.BoardId].Cells[t.CellId].State = WinState(t.Player)
 	g.Turns = append(g.Turns, t)
 	g.ApplyWinConditions()
 
-	g.emitChange()
+	if notify {
+		g.notifyChange()
+	}
+}
+
+func (g *GameState) ApplyTurn(t Turn) {
+	g.applyTurn(t, true)
 }
 
 func (g *GameState) Undo() {
@@ -158,10 +164,10 @@ func (g *GameState) Undo() {
 	g.Turns = []Turn{}
 
 	for _, t := range turns[:len(turns)-1] {
-		g.ApplyTurn(t)
+		g.applyTurn(t, false)
 	}
 
-	g.emitChange()
+	g.notifyChange()
 }
 
 func (b *Board) ApplyWinConditions() {
