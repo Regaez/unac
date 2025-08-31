@@ -1,8 +1,6 @@
 package domain
 
 import (
-	"log"
-
 	nanoid "github.com/matoous/go-nanoid/v2"
 )
 
@@ -23,21 +21,13 @@ func (s WinState) String() string {
 	return string(s)
 }
 
-func ParseWinstate(input string) WinState {
-	return WinState("")
-}
+type Player string
 
 const PLAYER_X = Player("X")
 const PLAYER_O = Player("O")
 
-type Player string
-
 func (p Player) String() string {
 	return string(p)
-}
-
-func (p Player) AsWinState() WinState {
-	return WinState(p)
 }
 
 type Cell struct {
@@ -56,7 +46,6 @@ type Board struct {
 }
 
 func (b *Board) IsAvailable() bool {
-	log.Printf("board state: %s", b.State)
 	return b.State == ""
 }
 
@@ -71,6 +60,8 @@ type GameState struct {
 	Boards   []*Board
 	Turns    []Turn
 	WinState WinState
+
+	onChanges []func()
 }
 
 func (g *GameState) IsOngoing() bool {
@@ -135,9 +126,33 @@ func NewGameState() GameState {
 	}
 }
 
+func (g *GameState) OnChange(f func()) {
+	g.onChanges = append(g.onChanges, f)
+}
+
+func (g *GameState) emitChange() {
+	for _, f := range g.onChanges {
+		f()
+	}
+}
+
 func (g *GameState) ApplyTurn(t Turn) {
-	g.Boards[t.BoardId].Cells[t.CellId].State = t.Player.AsWinState()
+	g.Boards[t.BoardId].Cells[t.CellId].State = WinState(t.Player)
 	g.Turns = append(g.Turns, t)
+	g.ApplyWinConditions()
+
+	g.emitChange()
+}
+
+func (g *GameState) Reset() {
+	newGame := NewGameState()
+
+	g.Boards = newGame.Boards
+	g.Turns = newGame.Turns
+	g.WinState = newGame.WinState
+	g.Id = newGame.Id
+
+	g.emitChange()
 }
 
 func (b *Board) ApplyWinConditions() {
@@ -152,11 +167,8 @@ func (b *Board) ApplyWinConditions() {
 			continue
 		}
 
-		log.Printf("Checking board %d", b.Id)
-
 		if b.Cells[ids[0]].State == b.Cells[ids[1]].State &&
 			b.Cells[ids[0]].State == b.Cells[ids[2]].State {
-			log.Printf("Board %d has been won", b.Id)
 			b.State = b.Cells[ids[0]].State
 		}
 	}

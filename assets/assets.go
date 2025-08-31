@@ -28,7 +28,7 @@ var AssetCss = Asset{
 	content:         assetContentCss,
 	filenamePattern: "site.%s.css",
 	hash:            getHash(assetContentCss),
-	mimeType:        "text/css;charset=UTF-8",
+	mimeType:        "text/css; charset=utf-8",
 }
 
 //go:embed embed/datastar-1-0-0-rc5.js
@@ -37,7 +37,7 @@ var AssetDatastar = Asset{
 	content:         assetContentDatastar,
 	filenamePattern: "datastar.%s.js",
 	hash:            getHash(assetContentDatastar),
-	mimeType:        "application/javascript;charset=UTF-8",
+	mimeType:        "application/javascript; charset=utf-8",
 }
 
 // Get the route for the asset.

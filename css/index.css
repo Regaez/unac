@@ -1,21 +1,3 @@
-@layer reset, theme, base, layouts, sections, components, utilities;
-/* @import "./reset.css" layer(reset); */
-/* @import "tailwindcss/theme.css" layer(theme); */
-/* @import "tailwindcss/preflight.css" layer(base); */
-/* @import "tailwindcss/utilities.css" layer(utilities); */
-/* @import "./layouts/box.css" layer(layouts); */
-/* @import "./layouts/center.css" layer(layouts); */
-/* @import "./layouts/cluster.css" layer(layouts); */
-/* @import "./layouts/cover.css" layer(layouts); */
-/* @import "./layouts/frame.css" layer(layouts); */
-/* @import "./layouts/grid.css" layer(layouts); */
-/* @import "./layouts/icon.css" layer(layouts); */
-/* @import "./layouts/imposter.css" layer(layouts); */
-/* @import "./layouts/reel.css" layer(layouts); */
-/* @import "./layouts/sidebar.css" layer(layouts); */
-/* @import "./layouts/stack.css" layer(layouts); */
-/* @import "./layouts/switcher.css" layer(layouts); */
-
 :root {
   --measure: 80ch;
   --text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
@@ -33,188 +15,175 @@
   navigation: auto;
 }
 
-@layer base {
-  html {
-    font-family:
-      -apple-system,
-      BlinkMacSystemFont,
-      avenir next,
-      avenir,
-      segoe ui,
-      helvetica neue,
-      helvetica,
-      Cantarell,
-      Ubuntu,
-      roboto,
-      noto,
-      arial,
-      sans-serif;
+html {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    avenir next,
+    avenir,
+    segoe ui,
+    helvetica neue,
+    helvetica,
+    Cantarell,
+    Ubuntu,
+    roboto,
+    noto,
+    arial,
+    sans-serif;
+}
+
+#game {
+  margin-block: 1em;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: min(calc(100vw * 0.33), 200px);
+  max-width: min(100vw, 600px);
+  background: #333;
+  border-radius: var(--border-radius);
+}
+
+.board {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  border-radius: var(--border-radius);
+}
+
+.cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  font-size: min(7vw, 3em);
+  font-weight: bold;
+  border-radius: var(--border-radius);
+  color: white;
+  transition: background ease-out 300ms;
+  user-select: none;
+}
+
+.cell.x,
+.board.x .cell {
+  background: #1982c4;
+}
+
+.cell.o,
+.board.o .cell {
+  background: #c41919;
+}
+
+h2.x {
+  color: #1982c4;
+}
+
+h2.o {
+  color: #c41919;
+}
+
+button:not([disabled]).cell {
+  background: oklch(0.88 0.06 141.84);
+  border: 0;
+  cursor: pointer;
+
+  &:hover {
+    background: oklch(0.88 0.26 141.84);
   }
 }
 
-@layer sections {
-  #game {
-    margin-block: 1em;
-  }
+#game:has(button.cell:nth-child(1):hover) .board:nth-child(1):not(.won, .draw),
+#game:has(button.cell:nth-child(2):hover) .board:nth-child(2):not(.won, .draw),
+#game:has(button.cell:nth-child(3):hover) .board:nth-child(3):not(.won, .draw),
+#game:has(button.cell:nth-child(4):hover) .board:nth-child(4):not(.won, .draw),
+#game:has(button.cell:nth-child(5):hover) .board:nth-child(5):not(.won, .draw),
+#game:has(button.cell:nth-child(6):hover) .board:nth-child(6):not(.won, .draw),
+#game:has(button.cell:nth-child(7):hover) .board:nth-child(7):not(.won, .draw),
+#game:has(button.cell:nth-child(8):hover) .board:nth-child(8):not(.won, .draw),
+#game:has(button.cell:nth-child(9):hover) .board:nth-child(9):not(.won, .draw),
+#game:has(button.cell:nth-child(1):hover)
+  .grid:has(.board.won:nth-child(1))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(2):hover)
+  .grid:has(.board.won:nth-child(2))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(3):hover)
+  .grid:has(.board.won:nth-child(3))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(4):hover)
+  .grid:has(.board.won:nth-child(4))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(5):hover)
+  .grid:has(.board.won:nth-child(5))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(6):hover)
+  .grid:has(.board.won:nth-child(6))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(7):hover)
+  .grid:has(.board.won:nth-child(7))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(8):hover)
+  .grid:has(.board.won:nth-child(8))
+  .board:not(.won, .draw),
+#game:has(button.cell:nth-child(9):hover)
+  .grid:has(.board.won:nth-child(9))
+  .board:not(.won, .draw) {
+  --opacity: 1;
+}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: min(calc(100vw * 0.33), 200px);
-    max-width: min(100vw, 600px);
-    background: #333;
-    border-radius: var(--border-radius);
-  }
+.board {
+  position: relative;
+  border-radius: var(--border-radius);
+  padding: 4px;
+  isolation: isolate;
+}
 
-  .board {
-    position: relative;
-    display: grid;
-    gap: 3px;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    border-radius: var(--border-radius);
-  }
+.board::before,
+.board::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  opacity: var(--opacity, 0);
+  transition: opacity ease-out 300ms;
+  background: conic-gradient(
+    from var(--glow-deg),
+    #3a71ff,
+    #1982c4,
+    #00f6f9,
+    #3a71ff
+  );
+  background-size: 400%;
+  z-index: -1;
+  animation: glow 8s linear infinite;
+  width: 100%;
+  border-radius: var(--border-radius);
+}
 
-  .cell {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: white;
-    font-size: min(7vw, 3em);
-    font-weight: bold;
-    border-radius: var(--border-radius);
-    color: white;
-    transition: background ease-out 300ms;
-    user-select: none;
-  }
+[data-player="X"] .board::before,
+[data-player="X"] .board::after {
+  background: conic-gradient(
+    from var(--glow-deg),
+    #ff863a,
+    #c92626,
+    #f90095,
+    #ff863a
+  );
+  background-size: 400%;
+}
 
-  .cell.x,
-  .board.x .cell {
-    background: #1982c4;
-  }
+.board::after {
+  filter: blur(8px);
+  transform: translate3d(0, 0, 0); /* For Safari */
+}
 
-  .cell.o,
-  .board.o .cell {
-    background: #c41919;
-  }
-
-  h2.x {
-    color: #1982c4;
-  }
-
-  h2.o {
-    color: #c41919;
-  }
-
-  button:not([disabled]).cell {
-    background: oklch(0.88 0.06 141.84);
-    border: 0;
-    cursor: pointer;
-
-    &:hover {
-      background: oklch(0.88 0.26 141.84);
-    }
-  }
-
-  #game:has(button.cell:nth-child(1):hover)
-    .board:nth-child(1):not(.won, .draw),
-  #game:has(button.cell:nth-child(2):hover)
-    .board:nth-child(2):not(.won, .draw),
-  #game:has(button.cell:nth-child(3):hover)
-    .board:nth-child(3):not(.won, .draw),
-  #game:has(button.cell:nth-child(4):hover)
-    .board:nth-child(4):not(.won, .draw),
-  #game:has(button.cell:nth-child(5):hover)
-    .board:nth-child(5):not(.won, .draw),
-  #game:has(button.cell:nth-child(6):hover)
-    .board:nth-child(6):not(.won, .draw),
-  #game:has(button.cell:nth-child(7):hover)
-    .board:nth-child(7):not(.won, .draw),
-  #game:has(button.cell:nth-child(8):hover)
-    .board:nth-child(8):not(.won, .draw),
-  #game:has(button.cell:nth-child(9):hover)
-    .board:nth-child(9):not(.won, .draw),
-  #game:has(button.cell:nth-child(1):hover)
-    .grid:has(.board.won:nth-child(1))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(2):hover)
-    .grid:has(.board.won:nth-child(2))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(3):hover)
-    .grid:has(.board.won:nth-child(3))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(4):hover)
-    .grid:has(.board.won:nth-child(4))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(5):hover)
-    .grid:has(.board.won:nth-child(5))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(6):hover)
-    .grid:has(.board.won:nth-child(6))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(7):hover)
-    .grid:has(.board.won:nth-child(7))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(8):hover)
-    .grid:has(.board.won:nth-child(8))
-    .board:not(.won, .draw),
-  #game:has(button.cell:nth-child(9):hover)
-    .grid:has(.board.won:nth-child(9))
-    .board:not(.won, .draw) {
-    --opacity: 1;
-  }
-
-  .board {
-    position: relative;
-    border-radius: var(--border-radius);
-    padding: 4px;
-    isolation: isolate;
-  }
-
-  .board::before,
-  .board::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    opacity: var(--opacity, 0);
-    transition: opacity ease-out 300ms;
-    background: conic-gradient(
-      from var(--glow-deg),
-      #3a71ff,
-      #1982c4,
-      #00f6f9,
-      #3a71ff
-    );
-    background-size: 400%;
-    z-index: -1;
-    animation: glow 8s linear infinite;
-    width: 100%;
-    border-radius: var(--border-radius);
-  }
-
-  [data-player="X"] .board::before,
-  [data-player="X"] .board::after {
-    background: conic-gradient(
-      from var(--glow-deg),
-      #ff863a,
-      #c92626,
-      #f90095,
-      #ff863a
-    );
-    background-size: 400%;
-  }
-
-  .board::after {
-    filter: blur(8px);
-    transform: translate3d(0, 0, 0); /* For Safari */
-  }
-
-  @keyframes glow {
-    100% {
-      --glow-deg: 270deg;
-    }
+@keyframes glow {
+  100% {
+    --glow-deg: 270deg;
   }
 }

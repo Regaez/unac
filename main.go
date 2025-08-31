@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/starfederation/datastar-go/datastar"
 )
-
 
 func main() {
 	gameState := domain.NewGameState()
@@ -34,29 +34,44 @@ func main() {
 		templates.Page(gameState).Render(context.Background(), w)
 	})
 
+	dsMux.Get("/updates", func(w http.ResponseWriter, r *http.Request) {
+		sse := datastar.NewSSE(w, r, datastar.WithCompression(datastar.WithBrotli()))
+
+		sse.PatchElementTempl(templates.Game(gameState))
+
+		gameState.OnChange(func() {
+			sse.PatchElementTempl(templates.Game(gameState))
+		})
+
+		for {
+			select {
+			case <-r.Context().Done():
+				return
+			}
+		}
+	})
+
 	dsMux.Post("/select/{boardId}/{cellId}", func(w http.ResponseWriter, r *http.Request) {
 		boardId, bErr := strconv.Atoi(chi.URLParam(r, "boardId"))
 		cellId, cErr := strconv.Atoi(chi.URLParam(r, "cellId"))
 
 		if bErr != nil || cErr != nil {
-		 	w.WriteHeader(400)
+			w.WriteHeader(400)
 			return
 		}
-		
-		gameState.ApplyTurn(domain.Turn {
+
+		gameState.ApplyTurn(domain.Turn{
 			BoardId: boardId,
-			CellId: cellId,
-			Player: gameState.GetCurrentPlayer(),
+			CellId:  cellId,
+			Player:  gameState.GetCurrentPlayer(),
 		})
 
-		gameState.ApplyWinConditions()
-		
-		templates.Game(gameState).Render(context.Background(), w)
+		w.WriteHeader(204)
 	})
 
 	dsMux.Post("/reset", func(w http.ResponseWriter, r *http.Request) {
-		gameState = domain.NewGameState()
-		templates.Game(gameState).Render(context.Background(), w)
+		gameState.Reset()
+		w.WriteHeader(204)
 	})
 
 	http.ListenAndServe(":3000", r)
