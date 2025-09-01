@@ -59,7 +59,9 @@ templ Game(game domain.GameState) {
 				</div>
 			}
 		</div>
-		if !game.IsOngoing() {
+		if game.IsOngoing() {
+			<h2 class={ game.GetCurrentPlayer().String() }>Waiting for { game.GetCurrentPlayer().String() }'s turn...</h2>
+		} else {
 			if game.WinState == "draw" {
 				<h2>It's a draw!</h2>
 			} else {
