@@ -2,13 +2,33 @@
   --measure: 80ch;
   --text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
   --border-radius: 2px;
+  --x-color: oklch(0.58 0.13 243);
+  --x-color-dark: oklch(0.44 0.13 243);
+  --o-color: oklch(0.52 0.2 28);
+  --o-color-dark: oklch(0.38 0.2 28);
   scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 @property --glow-deg {
   syntax: "<angle>";
   inherits: true;
   initial-value: -90deg;
+}
+
+@property --bg-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1d81c0;
+}
+
+@property --bg-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #005793;
 }
 
 @view-transition {
@@ -32,13 +52,85 @@ html {
     sans-serif;
 }
 
-main {
-  max-width: min(100%, 600px);
-  margin: auto;
+body {
+  min-height: 100%;
+  margin: 0;
+  color: white;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-25%);
+  }
+  100% {
+    transform: translateX(25%);
+  }
+}
+
+.background,
+.background::before,
+.background::after {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  left: -50%;
+  right: -50%;
+  top: 0;
+  opacity: 1;
+  z-index: -1;
+  background-image: linear-gradient(-60deg, var(--bg-a) 50%, var(--bg-b) 50%);
+  animation: slide 120s ease-in-out infinite alternate;
+  transition:
+    --bg-a 500ms ease-out,
+    --bg-b 500ms ease-out;
+}
+
+.background::before {
+  opacity: 0.5;
+  animation-direction: alternate-reverse;
+  animation-duration: 150s;
+}
+
+.background::after {
+  opacity: 0.5;
+  animation-duration: 180s;
+}
+
+:has([data-player="X"]) .background {
+  --bg-a: #1d81c0;
+  --bg-b: #005793;
+}
+
+:has([data-player="O"]) .background {
+  --bg-a: #c21919;
+  --bg-b: #900000;
 }
 
 #game {
+  position: relative;
   margin-block: 1em;
+  max-width: min(100%, calc(600px + 4em));
+  padding: 2em;
+  margin: auto;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+  }
+
+  &::before {
+    border: 2px solid oklch(0 0 0 / 0.1);
+  }
+
+  &::after {
+    background: oklch(0 0 0 / 0.15);
+    z-index: -1;
+    filter: blur(4px);
+  }
 }
 
 .grid {
@@ -74,21 +166,21 @@ main {
 
 .cell.x,
 .board.x .cell {
-  background: #1982c4;
+  background: var(--x-color);
 }
 
 .cell.o,
 .board.o .cell {
-  background: #c41919;
+  background: var(--o-color);
 }
 
-h2.x {
-  color: #1982c4;
-}
+/* h2.x { */
+/* color: #1982c4; */
+/* } */
 
-h2.o {
-  color: #c41919;
-}
+/* h2.o { */
+/* color: #c41919; */
+/* } */
 
 button.cell {
   background: oklch(0.85 0.06 141.84);
@@ -108,40 +200,49 @@ button.cell {
   }
 }
 
-#game:has(button.cell:nth-child(1):hover) .board:nth-child(1):not(.won, .draw),
-#game:has(button.cell:nth-child(2):hover) .board:nth-child(2):not(.won, .draw),
-#game:has(button.cell:nth-child(3):hover) .board:nth-child(3):not(.won, .draw),
-#game:has(button.cell:nth-child(4):hover) .board:nth-child(4):not(.won, .draw),
-#game:has(button.cell:nth-child(5):hover) .board:nth-child(5):not(.won, .draw),
-#game:has(button.cell:nth-child(6):hover) .board:nth-child(6):not(.won, .draw),
-#game:has(button.cell:nth-child(7):hover) .board:nth-child(7):not(.won, .draw),
-#game:has(button.cell:nth-child(8):hover) .board:nth-child(8):not(.won, .draw),
-#game:has(button.cell:nth-child(9):hover) .board:nth-child(9):not(.won, .draw),
-#game:has(button.cell:nth-child(1):hover)
+#game:has(button.cell:nth-child(1):where(:hover, :focus-visible))
+  .board:nth-child(1):not(.won, .draw),
+#game:has(button.cell:nth-child(2):where(:hover, :focus-visible))
+  .board:nth-child(2):not(.won, .draw),
+#game:has(button.cell:nth-child(3):where(:hover, :focus-visible))
+  .board:nth-child(3):not(.won, .draw),
+#game:has(button.cell:nth-child(4):where(:hover, :focus-visible))
+  .board:nth-child(4):not(.won, .draw),
+#game:has(button.cell:nth-child(5):where(:hover, :focus-visible))
+  .board:nth-child(5):not(.won, .draw),
+#game:has(button.cell:nth-child(6):where(:hover, :focus-visible))
+  .board:nth-child(6):not(.won, .draw),
+#game:has(button.cell:nth-child(7):where(:hover, :focus-visible))
+  .board:nth-child(7):not(.won, .draw),
+#game:has(button.cell:nth-child(8):where(:hover, :focus-visible))
+  .board:nth-child(8):not(.won, .draw),
+#game:has(button.cell:nth-child(9):where(:hover, :focus-visible))
+  .board:nth-child(9):not(.won, .draw),
+#game:has(button.cell:nth-child(1):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(1))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(2):hover)
+#game:has(button.cell:nth-child(2):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(2))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(3):hover)
+#game:has(button.cell:nth-child(3):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(3))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(4):hover)
+#game:has(button.cell:nth-child(4):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(4))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(5):hover)
+#game:has(button.cell:nth-child(5):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(5))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(6):hover)
+#game:has(button.cell:nth-child(6):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(6))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(7):hover)
+#game:has(button.cell:nth-child(7):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(7))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(8):hover)
+#game:has(button.cell:nth-child(8):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(8))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(9):hover)
+#game:has(button.cell:nth-child(9):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(9))
   .board:not(.won, .draw) {
   --opacity: 1;

@@ -23,8 +23,9 @@ templ Layout() {
 
 templ Page(game domain.GameState) {
 	@Layout() {
+		<div class="background"></div>
 		<main id="main" data-on-load={ fmt.Sprintf("@get('/%s')", game.Id) }>
-			<h1>unac</h1>
+			<h1><em>Ultimate</em> Noughts &amp; Crosses</h1>
 			<form method="get" action="/">
 				<input type="submit" value="New game"/>
 			</form>
