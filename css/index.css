@@ -80,6 +80,12 @@ body {
     --bg-b 1s ease-out;
 }
 
+@media screen and (prefers-reduced-motion: reduce) {
+  .background {
+    animation-play-state: paused;
+  }
+}
+
 .background:not(:first-of-type) {
   opacity: 0.5;
 }
@@ -111,11 +117,17 @@ body {
   --bg-b: #900000;
 }
 
+main {
+  --padding: min(5vw, 2em);
+  max-width: min(100%, calc(600px + (4 * var(--padding))));
+  margin: 2em auto;
+  padding: var(--padding);
+}
+
 #game {
   position: relative;
   margin-block: 1em;
-  max-width: min(100%, calc(600px + 4em));
-  padding: 2em;
+  padding: var(--padding);
   margin: auto;
   isolation: isolate;
 
@@ -138,6 +150,11 @@ body {
   }
 }
 
+h1,
+h2 {
+  font-weight: 300;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -145,6 +162,16 @@ body {
   max-width: min(100vw, 600px);
   background: #333;
   border-radius: var(--border-radius);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.controls form {
+  margin: 0;
 }
 
 .board {

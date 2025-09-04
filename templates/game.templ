@@ -28,17 +28,28 @@ templ Page(game domain.GameState) {
 		<div class="background"></div>
 		<div class="background"></div>
 		<main id="main" data-on-load={ fmt.Sprintf("@get('/%s')", game.Id) }>
-			<h1><em>Ultimate</em> Noughts &amp; Crosses</h1>
-			<form method="get" action="/">
-				<input type="submit" value="New game"/>
-			</form>
-			<button data-on-click={ fmt.Sprintf("@post('/%s/undo');", game.Id) }>Undo</button>
+			<h1>Ultimate Noughts &amp; Crosses</h1>
 			@Game(game)
 		</main>
 	}
 }
 
 templ Game(game domain.GameState) {
+	<div id="controls" class="controls">
+		<form method="get" action="/">
+			<input type="submit" value="New game"/>
+		</form>
+		if game.IsOngoing() {
+			<h2 class={ game.GetCurrentPlayer().String() }>Waiting for { game.GetCurrentPlayer().String() }'s turn...</h2>
+		} else {
+			if game.WinState == "draw" {
+				<h2>It's a draw!</h2>
+			} else {
+				<h2 class={ game.WinState.String() }>{ game.WinState } wins!</h2>
+			}
+		}
+		<button data-on-click={ fmt.Sprintf("@post('/%s/undo');", game.Id) }>Undo</button>
+	</div>
 	<div id="game" data-signals-clicked="false">
 		<div id="grid" class="grid" data-player={ game.GetCurrentPlayer() }>
 			for _, b := range game.Boards {
@@ -63,14 +74,5 @@ templ Game(game domain.GameState) {
 				</div>
 			}
 		</div>
-		if game.IsOngoing() {
-			<h2 class={ game.GetCurrentPlayer().String() }>Waiting for { game.GetCurrentPlayer().String() }'s turn...</h2>
-		} else {
-			if game.WinState == "draw" {
-				<h2>It's a draw!</h2>
-			} else {
-				<h2 class={ game.WinState.String() }>{ game.WinState } wins!</h2>
-			}
-		}
 	</div>
 }
