@@ -76,13 +76,14 @@ body {
   background-image: linear-gradient(-60deg, var(--bg-a) 50%, var(--bg-b) 50%);
   animation: slide 300s ease-in-out infinite alternate;
   transition:
-    --bg-a 1s ease-out,
-    --bg-b 1s ease-out;
+    --bg-a 250ms ease-out,
+    --bg-b 150ms ease-out;
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
   .background {
     animation-play-state: paused;
+    transition: none;
   }
 }
 
@@ -124,6 +125,12 @@ main {
   padding: var(--padding);
 }
 
+h1,
+h2 {
+  font-weight: 200;
+  text-align: center;
+}
+
 #game {
   position: relative;
   margin-block: 1em;
@@ -148,11 +155,6 @@ main {
     z-index: -1;
     filter: blur(4px);
   }
-}
-
-h1,
-h2 {
-  font-weight: 300;
 }
 
 .grid {
