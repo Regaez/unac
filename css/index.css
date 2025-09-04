@@ -67,33 +67,38 @@ body {
   }
 }
 
-.background,
-.background::before,
-.background::after {
+.background {
   content: "";
   position: fixed;
-  bottom: 0;
-  left: -50%;
-  right: -50%;
-  top: 0;
+  inset: -50%;
   opacity: 1;
   z-index: -1;
   background-image: linear-gradient(-60deg, var(--bg-a) 50%, var(--bg-b) 50%);
-  animation: slide 120s ease-in-out infinite alternate;
+  animation: slide 300s ease-in-out infinite alternate;
   transition:
-    --bg-a 500ms ease-out,
-    --bg-b 500ms ease-out;
+    --bg-a 1s ease-out,
+    --bg-b 1s ease-out;
 }
 
-.background::before {
+.background:not(:first-of-type) {
   opacity: 0.5;
+}
+
+.background:nth-of-type(2) {
   animation-direction: alternate-reverse;
-  animation-duration: 150s;
+  animation-delay: -60s;
+  animation-duration: 310s;
 }
 
-.background::after {
-  opacity: 0.5;
-  animation-duration: 180s;
+.background:nth-of-type(3) {
+  animation-delay: -90s;
+  animation-duration: 320s;
+}
+
+.background:nth-of-type(4) {
+  animation-direction: alternate-reverse;
+  animation-delay: -120s;
+  animation-duration: 330s;
 }
 
 :has([data-player="X"]) .background {
