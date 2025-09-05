@@ -114,8 +114,8 @@ body {
 }
 
 :has([data-player="O"]) .background {
-  --bg-a: #c21919;
-  --bg-b: #900000;
+  --bg-b: #c21919;
+  --bg-a: #900000;
 }
 
 main {
@@ -207,14 +207,6 @@ h2 {
 .board.o .cell {
   background: var(--o-color);
 }
-
-/* h2.x { */
-/* color: #1982c4; */
-/* } */
-
-/* h2.o { */
-/* color: #c41919; */
-/* } */
 
 button.cell {
   background: oklch(0.85 0.06 141.84);
@@ -330,8 +322,169 @@ button.cell {
   transform: translate3d(0, 0, 0); /* For Safari */
 }
 
+.confetti {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+
+  div {
+    position: absolute;
+    width: 10px;
+    height: 30px;
+    background: #ffd300;
+    top: 0;
+    opacity: 0;
+    animation: confetti 1500ms infinite ease-out;
+    /* left: clamp(0%, var(--confetti-left), 100%); */
+    /* transform: rotate(var(--confetti-rotate)); */
+    /* animation-delay: var(--confetti-delay); */
+    /* animation-duration: clamp(1200ms, var(--confetti-duration), 2500ms); */
+  }
+
+  div:nth-child(1) {
+    left: 7%;
+    transform: rotate(-40deg);
+    animation-delay: 182ms;
+    animation-duration: 1116ms;
+  }
+
+  div:nth-child(2) {
+    left: 14%;
+    transform: rotate(4deg);
+    animation-delay: 161ms;
+    animation-duration: 1076ms;
+  }
+
+  div:nth-child(3) {
+    left: 21%;
+    transform: rotate(-51deg);
+    animation-delay: 481ms;
+    animation-duration: 1103ms;
+  }
+
+  div:nth-child(4) {
+    left: 28%;
+    transform: rotate(61deg);
+    animation-delay: 334ms;
+    animation-duration: 708ms;
+  }
+
+  div:nth-child(5) {
+    left: 35%;
+    transform: rotate(-52deg);
+    animation-delay: 302ms;
+    animation-duration: 776ms;
+  }
+
+  div:nth-child(6) {
+    left: 42%;
+    transform: rotate(38deg);
+    animation-delay: 180ms;
+    animation-duration: clamp(1168ms);
+  }
+
+  div:nth-child(7) {
+    left: 49%;
+    transform: rotate(11deg);
+    animation-delay: 395ms;
+    animation-duration: 1200ms;
+  }
+
+  div:nth-child(8) {
+    left: 56%;
+    transform: rotate(49deg);
+    animation-delay: 14ms;
+    animation-duration: 887ms;
+  }
+
+  div:nth-child(9) {
+    left: 63%;
+    transform: rotate(-72deg);
+    animation-delay: 149ms;
+    animation-duration: 805ms;
+  }
+
+  div:nth-child(10) {
+    left: 70%;
+    transform: rotate(10deg);
+    animation-delay: 351ms;
+    animation-duration: 1059ms;
+  }
+
+  div:nth-child(11) {
+    left: 77%;
+    transform: rotate(4deg);
+    animation-delay: 307ms;
+    animation-duration: 1132ms;
+  }
+
+  div:nth-child(12) {
+    left: 84%;
+    transform: rotate(42deg);
+    animation-delay: 464ms;
+    animation-duration: 776ms;
+  }
+
+  div:nth-child(13) {
+    left: 91%;
+    transform: rotate(-72deg);
+    animation-delay: 429ms;
+    animation-duration: 818ms;
+  }
+
+  div:nth-child(odd) {
+    background: deeppink;
+  }
+
+  div:nth-child(even) {
+    z-index: 1;
+  }
+
+  div:nth-child(4n) {
+    width: 5px;
+    height: 12px;
+    animation-duration: 2000ms;
+  }
+
+  div:nth-child(3n) {
+    width: 3px;
+    height: 10px;
+    animation-duration: 2500ms;
+    animation-delay: 1000ms;
+  }
+
+  div:nth-child(3n-5) {
+    background: deepskyblue;
+  }
+
+  div:nth-child(5n-1) {
+    background: red;
+  }
+
+  div:nth-child(4n-7) {
+    background: lawngreen;
+  }
+}
+
 @keyframes glow {
   100% {
     --glow-deg: 270deg;
+  }
+}
+
+@keyframes confetti {
+  from {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(33vh);
   }
 }

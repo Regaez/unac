@@ -221,6 +221,10 @@ func (g *GameState) ApplyWinConditions() {
 }
 
 func (g *GameState) GetCurrentPlayer() Player {
+	if !g.IsOngoing() {
+		return Player(g.WinState)
+	}
+
 	if len(g.Turns) == 0 {
 		return PLAYER_X
 	}

@@ -23,10 +23,9 @@ templ Layout() {
 
 templ Page(game domain.GameState) {
 	@Layout() {
-		<div class="background"></div>
-		<div class="background"></div>
-		<div class="background"></div>
-		<div class="background"></div>
+		for range 4 {
+			<div class="background"></div>
+		}
 		<main id="main" data-on-load={ fmt.Sprintf("@get('/%s')", game.Id) }>
 			<h1>Ultimate Noughts &amp; Crosses</h1>
 			@Game(game)
@@ -45,7 +44,12 @@ templ Game(game domain.GameState) {
 			if game.WinState == "draw" {
 				<h2>It's a draw!</h2>
 			} else {
-				<h2 class={ game.WinState.String() }>{ game.WinState } wins!</h2>
+				<h2>{ game.WinState } wins!</h2>
+				<div class="confetti">
+					for range 13 {
+						<div></div>
+					}
+				</div>
 			}
 		}
 		<button data-on-click={ fmt.Sprintf("@post('/%s/undo');", game.Id) }>Undo</button>
