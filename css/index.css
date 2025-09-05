@@ -119,16 +119,17 @@ body {
 }
 
 main {
-  --padding: min(5vw, 2em);
+  --padding: min(3vw, 2em);
   max-width: min(100%, calc(600px + (4 * var(--padding))));
   margin: 0 auto;
-  padding: var(--padding);
+  padding: calc(var(--padding) / 2);
 }
 
 h1,
 h2 {
   font-weight: 200;
   text-align: center;
+  text-wrap: balance;
 }
 
 #game {
