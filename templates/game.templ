@@ -39,7 +39,7 @@ templ Game(game domain.GameState) {
 			<button type="submit" class="btn">New game</button>
 		</form>
 		if game.IsOngoing() {
-			<h2>{ game.GetCurrentPlayer().String() }'s turn...</h2>
+			<h2>{ game.GetCurrentPlayer().String() }'s turn</h2>
 		} else {
 			if game.WinState == "draw" {
 				<h2>It's a draw!</h2>
