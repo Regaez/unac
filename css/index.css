@@ -76,8 +76,8 @@ body {
   background-image: linear-gradient(-60deg, var(--bg-a) 50%, var(--bg-b) 50%);
   animation: slide 300s ease-in-out infinite alternate;
   transition:
-    --bg-a 250ms ease-out,
-    --bg-b 150ms ease-out;
+    --bg-a 500ms ease-out,
+    --bg-b 500ms ease-out;
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
