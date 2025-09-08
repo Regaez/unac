@@ -74,7 +74,8 @@ func main() {
 		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 
 		if !gameExists {
-			w.WriteHeader(404)
+			w.Header().Add("Location", "/")
+			w.WriteHeader(303)
 			return
 		}
 
