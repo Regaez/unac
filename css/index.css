@@ -130,11 +130,14 @@ h2 {
 }
 
 #game {
-  position: relative;
   margin-block: 1em;
   padding: var(--padding);
   margin: auto;
   isolation: isolate;
+}
+
+.box {
+  position: relative;
 
   &::before,
   &::after {
@@ -194,6 +197,21 @@ h2 {
   color: white;
   transition: background ease-out 300ms;
   user-select: none;
+  margin: 0;
+  height: 100%;
+  position: relative;
+}
+
+form.cell {
+  background: oklch(0.85 0.06 141.84);
+
+  [data-player="X"] &:has(button:not([disabled])):hover {
+    background: oklch(0.75 0.13 243.45);
+  }
+
+  [data-player="O"] &:has(button:not([disabled])):hover {
+    background: oklch(0.72 0.15 22);
+  }
 }
 
 .cell.x,
@@ -206,18 +224,12 @@ h2 {
   background: var(--o-color);
 }
 
-button.cell {
-  background: oklch(0.85 0.06 141.84);
+.cell button {
   border: 0;
+  background: none;
   cursor: pointer;
-
-  [data-player="X"] &:not([disabled]):hover {
-    background: oklch(0.75 0.13 243.45);
-  }
-
-  [data-player="O"] &:not([disabled]):hover {
-    background: oklch(0.72 0.15 22);
-  }
+  position: absolute;
+  inset: 0;
 
   &[disabled] {
     cursor: wait;
@@ -276,49 +288,49 @@ button.cell {
   }
 }
 
-#game:has(button.cell:nth-child(1):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(1):where(:hover, :focus-visible))
   .board:nth-child(1):not(.won, .draw),
-#game:has(button.cell:nth-child(2):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(2):where(:hover, :focus-visible))
   .board:nth-child(2):not(.won, .draw),
-#game:has(button.cell:nth-child(3):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(3):where(:hover, :focus-visible))
   .board:nth-child(3):not(.won, .draw),
-#game:has(button.cell:nth-child(4):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(4):where(:hover, :focus-visible))
   .board:nth-child(4):not(.won, .draw),
-#game:has(button.cell:nth-child(5):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(5):where(:hover, :focus-visible))
   .board:nth-child(5):not(.won, .draw),
-#game:has(button.cell:nth-child(6):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(6):where(:hover, :focus-visible))
   .board:nth-child(6):not(.won, .draw),
-#game:has(button.cell:nth-child(7):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(7):where(:hover, :focus-visible))
   .board:nth-child(7):not(.won, .draw),
-#game:has(button.cell:nth-child(8):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(8):where(:hover, :focus-visible))
   .board:nth-child(8):not(.won, .draw),
-#game:has(button.cell:nth-child(9):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(9):where(:hover, :focus-visible))
   .board:nth-child(9):not(.won, .draw),
-#game:has(button.cell:nth-child(1):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(1):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(1))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(2):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(2):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(2))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(3):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(3):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(3))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(4):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(4):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(4))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(5):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(5):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(5))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(6):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(6):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(6))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(7):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(7):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(7))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(8):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(8):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(8))
   .board:not(.won, .draw),
-#game:has(button.cell:nth-child(9):where(:hover, :focus-visible))
+#game:has(form.cell:nth-child(9):where(:hover, :focus-visible))
   .grid:has(.board.won:nth-child(9))
   .board:not(.won, .draw) {
   --opacity: 1;
@@ -370,6 +382,31 @@ button.cell {
 .board::after {
   filter: blur(8px);
   transform: translate3d(0, 0, 0); /* For Safari */
+}
+
+li {
+  margin-block-end: 0.5em;
+}
+
+.nojs {
+  opacity: 1;
+  transition: opacity 150ms ease-out;
+  transition-delay: 2s;
+  padding: 1em;
+  line-height: 1.6;
+  margin: 0.5em 0;
+
+  @starting-style {
+    opacity: 0;
+  }
+
+  > :first-child {
+    margin-block-start: 0;
+  }
+
+  > :last-child {
+    margin-block-end: 0;
+  }
 }
 
 .confetti {

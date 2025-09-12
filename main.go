@@ -84,6 +84,40 @@ func main() {
 		templates.Page(*gameState).Render(context.Background(), w)
 	})
 
+	r.Post("/{gameId}/{boardId}/{cellId}", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
+		boardId, bErr := strconv.Atoi(chi.URLParam(r, "boardId"))
+		cellId, cErr := strconv.Atoi(chi.URLParam(r, "cellId"))
+
+		if !gameExists || bErr != nil || cErr != nil {
+			w.WriteHeader(400)
+			return
+		}
+
+		gameState.ApplyTurn(domain.Turn{
+			BoardId: boardId,
+			CellId:  cellId,
+			Player:  gameState.GetCurrentPlayer(),
+		})
+
+		w.Header().Add("Location", fmt.Sprintf("/%s", gameState.Id))
+		w.WriteHeader(303)
+	})
+
+	r.Post("/{gameId}/undo", func(w http.ResponseWriter, r *http.Request) {
+		gameState, gameExists := games[chi.URLParam(r, "gameId")]
+
+		if !gameExists {
+			w.WriteHeader(404)
+			return
+		}
+
+		gameState.Undo()
+
+		w.Header().Add("Location", fmt.Sprintf("/%s", gameState.Id))
+		w.WriteHeader(303)
+	})
+
 	dsMux.Get("/{gameId}", func(w http.ResponseWriter, r *http.Request) {
 		gameState, gameExists := games[chi.URLParam(r, "gameId")]
 
@@ -94,11 +128,11 @@ func main() {
 			return
 		}
 
-		sse.PatchElementTempl(templates.Game(*gameState))
+		sse.PatchElementTempl(templates.Game(*gameState), datastar.WithUseViewTransitions(true))
 		sse.PatchSignals([]byte("{clicked: false}"))
 
 		gameState.OnChange(func() {
-			sse.PatchElementTempl(templates.Game(*gameState))
+			sse.PatchElementTempl(templates.Game(*gameState), datastar.WithUseViewTransitions(true))
 			sse.PatchSignals([]byte("{clicked: false}"))
 		})
 
@@ -116,7 +150,7 @@ func main() {
 		cellId, cErr := strconv.Atoi(chi.URLParam(r, "cellId"))
 
 		if !gameExists || bErr != nil || cErr != nil {
-			w.WriteHeader(400)
+			w.WriteHeader(404)
 			return
 		}
 

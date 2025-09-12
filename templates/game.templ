@@ -29,6 +29,14 @@ templ Page(game domain.GameState) {
 		<main id="main" data-on-load={ fmt.Sprintf("@get('/%s')", game.Id) }>
 			<h1>Ultimate Noughts &amp; Crosses</h1>
 			@Game(game)
+			<div class="nojs box" data-show="false">
+				<p>Uh oh, it looks like Javascript either failed to load, or is disabled in your browser. <em>Don't worry, you'll still be able to play!</em></p>
+				<p>However, there will be some downsides:</p>
+				<ul>
+					<li><strong>No real-time updates:</strong> when you are playing across multiple browser sessions, you'll need to manually reload the page after the other player has taken their turn in order to see the latest state of the game.</li>
+					<li><strong>Higher bandwidth usage:</strong> since the page will fully reload after each turn, your browser will download more data over the course of the game.</li>
+				</ul>
+			</div>
 		</main>
 	}
 }
@@ -52,9 +60,15 @@ templ Game(game domain.GameState) {
 				</div>
 			}
 		}
-		<button class="btn" data-on-click={ fmt.Sprintf("@post('/%s/undo');", game.Id) }>Undo turn</button>
+		<form
+			method="POST"
+			action={ fmt.Sprintf("/%s/undo", game.Id) }
+			data-on-submit={ fmt.Sprintf("@post('/%s/undo');", game.Id) }
+		>
+			<button class="btn" type="submit">Undo turn</button>
+		</form>
 	</div>
-	<div id="game" data-signals-clicked="false">
+	<div id="game" class="box" data-signals-clicked="false">
 		<div id="grid" class="grid" data-player={ game.GetCurrentPlayer() }>
 			for _, b := range game.Boards {
 				<div
@@ -63,12 +77,15 @@ templ Game(game domain.GameState) {
 				>
 					for _, c := range b.Cells {
 						if game.IsSelectable(b, c) {
-							<button
+							<form
 								class="cell"
+								method="POST"
+								action={ fmt.Sprintf("/%s/%d/%d", game.Id, b.Id, c.Id) }
+								data-on-submit={ fmt.Sprintf("$clicked = true; @post('/%s/%d/%d')", game.Id, b.Id, c.Id) }
 								id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }
-								data-on-click={ fmt.Sprintf("$clicked = true; @post('/%s/%d/%d')", game.Id, b.Id, c.Id) }
-								data-attr-disabled="$clicked"
-							></button>
+							>
+								<button type="submit" data-attr-disabled="$clicked"></button>
+							</form>
 						} else {
 							<div class={ "cell", c.State.String() } id={ fmt.Sprintf("cell-%d-%d", b.Id, c.Id) }>
 								{ c.State }
